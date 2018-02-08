@@ -2,19 +2,22 @@
 Kanban
 advertise.hpp
 */
+#include <iostream>
+#include <vector>
+#include <string>
 #include "user.cpp"
 
 class Advertise {
 	private:
-		string itemName;
+		std::string itemName;
 		float minBid;
 		int auctionLength;
-		string itemList[];
+		std::vector<std::string> itemList;
 
 	public:
-		string Advertise(User);
-		string ParseRequest(User);
-		string FillItemName(string);
+		Advertise(User user);
+		std::string ParseRequest(User user);
+		std::string FillItemName(std::string itemName);
 		void ReadAuctions();
-		bool Exists(string);
+		bool Exists(std::string testName);
 };

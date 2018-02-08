@@ -2,10 +2,7 @@
 Kanban
 advertise.cpp
 */
-#include <iostream>
 #include "advertise.hpp"
-
-using namespace std;
 
 /*
 Advertise - Advertise
@@ -13,25 +10,24 @@ General constructor, gets input to create new auction.
 @params: user
 @return: None
 */
-string Advertise::Advertise(User user){
-	this.ReadAuctions();
+Advertise::Advertise(User user){
+	Advertise::ReadAuctions();
 
-	cout << "Item Name: ";
-	getline(cin, this.itemName);
+	std::cout << "Item Name: ";
+	std::cin >> this->itemName;
 
 	//FillItemName used for Exists function
 
-	cout << "Minimum Bid: ";
-	getline(cin, this.minBid);
+	std::cout << "Minimum Bid: ";
+	std::cin >> this->minBid;
 
-	cout << "Auction Length (Days): ";
-	getline(cin, this.auctionLength);
+	std::cout << "Auction Length (Days): ";
+	std::cin >> this->auctionLength;
 
 	// TODO: Error checking for all input
 
-	cout << this.itemName << " is up for auction!" << endl;
-
-	return this.ParseRequest(user);
+	std::cout << this->itemName << " is up for auction!" << std::endl;
+	Advertise::ParseRequest(user);
 }
 
 /*
@@ -40,7 +36,7 @@ Parse current transaction's request into form for daily transaction file
 @params: None
 @return: string of request
 */
-string Advertise::ParseRequest(User user){
+std::string Advertise::ParseRequest(User user){
 	// TODO: Generate daily transaction file object for current advertise
 	//			 transaction.
 	return "test";
@@ -52,7 +48,7 @@ Parse item name inputted by user to meet system's item name and formatting requi
 @params: itemName
 @return: String value of 'itemName' + remaining filled space
 */
-string Advertise::FillItemName(string itemName) {
+std::string Advertise::FillItemName(std::string itemName) {
 
 	// TODO: Check length of username, add required amount of _'s to equal 15.
 
@@ -69,7 +65,7 @@ Read availiable items file, store item list within itemList
 void Advertise::ReadAuctions() {
 	// TODO: Need to read item list
 
-	this.itemList = {"test"};
+	this->itemList = {"test"};
 }
 
 /*
@@ -78,9 +74,9 @@ Iterate through itemList, determine if a match is found
 @params: testName
 @return: boolean
 */
-bool Advertise::Exists(string testName) {
-	for (int i = 0; i < this.itemList.size(); i++) {
-		if (testName == this.itemList[i]) {
+bool Advertise::Exists(std::string testName) {
+	for (int i = 0; i < this->itemList.size(); i++) {
+		if (testName == this->itemList[i]) {
 			return true;
 		}
 	}

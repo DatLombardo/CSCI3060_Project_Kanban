@@ -2,16 +2,20 @@
 Kanban
 login.hpp
 */
+#include <iostream>
+#include <vector>
+#include <string>
 #include "user.cpp"
 
 class Login {
 	private:
-		string username;
-		string userList[];
+		std::string username;
+		std::vector<std::string> userList;
 	public:
-		User Login();
+		Login();
+		User GenerateUser(std::string username);
 		void ReadUsernames();
-		bool Exists(string);
-		string FillUsername(string);
-		string GetUser(string);
+		bool Exists(std::string testName);
+		std::string FillUsername(std::string username);
+		std::string GetUser(std::string username);
 };

@@ -4,13 +4,11 @@ User.cpp
 */
 #include <iostream>
 
-using namespace std;
-
 class User {
 	public:
-		void User();
-		string username;
-		string type;
+		User(std::string newUser);
+		std::string username;
+		std::string type;
 		float credit;
 };
 
@@ -20,8 +18,8 @@ General constructor for User class
 @params: newUser - formatting from current user accounts file.
 @return: none
 */
-void User::User(string newUser) {
-	this.username = newUser.substr(0,14);
-	this.type = newUser.substr(16,17);
-	this.credit = newUser.substr(19,27);
+User::User(std::string newUser) {
+	this->username = newUser.substr(0,14);
+	this->type = newUser.substr(16,17);
+	//this->credit = std::strtof(newUser.substr(19,27));
 }

@@ -3,9 +3,8 @@ Kanban
 delete.cpp
 */
 #include <iostream>
+#include <string>
 #include "delete.hpp"
-
-using namespace std;
 
 /*
 Delete - Delete
@@ -13,14 +12,15 @@ General constructor, deletes user specified by admin.
 @params: None
 @return: None
 */
-string Delete::Delete(User user){
-	cout << "Username: ";
-	getline(cin, this.username);
+Delete::Delete(User user){
+	std::cout << "Username: " << std::endl;
+	std::cin >> this->username;
 
-	this.CancelSales();
-	this.RemoveUser();
-	cout << "Account " << this.username  << " Deleted." << endl;
-	return this.ParseRequest();
+	Delete::CancelSales();
+	Delete::RemoveUser();
+	std::cout << "Account " << this->username  << " Deleted." << std::endl;
+	//Call in main
+	//Delete::ParseRequest();
 }
 
 /*
@@ -29,7 +29,7 @@ Parse current transaction's request into form for daily transaction file
 @params: None
 @return: string of request
 */
-string Delete::ParseRequest(){
+std::string Delete::ParseRequest(){
 	// TODO: Generate daily transaction file object for current create
 	//			 transaction.
 	return "test";

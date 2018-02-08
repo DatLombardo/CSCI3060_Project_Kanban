@@ -2,15 +2,15 @@
 Kanban
 delete.hpp
 */
+#include <iostream>
+#include <string>
 #include "user.cpp"
 
 class Delete {
-	private:
-		string username;
-
 	public:
-		string Delete();
-		string ParseRequest();
+		std::string username;
+		Delete(User user);
+		std::string ParseRequest();
 		void CancelSales();
 		void RemoveUser();
 };

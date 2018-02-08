@@ -2,10 +2,12 @@
 Kanban
 logout.hpp
 */
+#include <iostream>
+#include <string>
 #include "user.cpp"
 
 class Logout {
 	public:
-		string Logout(User);
-		string ParseRequest(User);
+		Logout(User user);
+		std::string ParseRequest(User user);
 };

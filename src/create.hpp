@@ -3,17 +3,20 @@ Kanban
 create.hpp
 */
 #include "user.cpp"
+#include <iostream>
+#include <string>
+#include <vector>
 
 class Create {
 	private:
-		string username;
-		string type;
+		std::string username;
+		std::string type;
 		float credit;
-		string userList[];
+		std::vector<std::string> userList;
 
 	public:
-		string Create(User);
-		string ParseRequest();
+		Create(User user);
+		std::string ParseRequest();
 		void ReadUsernames();
-		bool Exists(string);
+		bool Exists(std::string testName);
 };
