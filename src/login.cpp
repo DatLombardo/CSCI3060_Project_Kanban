@@ -3,57 +3,54 @@ Kanban
 Login.cpp
 */
 #include <iostream>
+#include "login.hpp"
+
 using namespace std;
 
-class Login {
-	private:
-		string username;
-		string[] usernameList;
-	public:
-		Login();
-		ReadUsernames();
-		Exists();
-		FillUsername();
-		GetUser();
-};
-
-Login::Login() {
+/*
+Login - Login
+General Login constructor, prompts for user input and builds User instance.
+@params: None
+@return: User instance
+*/
+User Login::Login() {
 	cout << "Username: ";
 	getline(cin, this.username);
 
 	//Read in username list from information file.
-	ReadUsernames();
+	this.ReadUsernames();
 
-	if (Exists(this.username)) {
+	if (this.Exists(this.username)) {
 		cout << "Welcome, " << this.username << "!" << endl;
 	}
 	// TODO: Add functionality for incorrect username input & username DNE.
 
-	return GetUser(FillUsername(this.username));
+	//Build User instance to be passed back to main
+	User newUser = new User(this.GetUser(this.FillUsername(this.username)));
+	return newUser;
 }
 
 /*
 Login - ReadUsernames
+Read current user accounts file, store user list within userList
 @params: None
-@return: Array of usernames
+@return: None
 */
-Login::ReadUsernames() {
-	this.usernameList = [];
+void Login::ReadUsernames() {
 	// TODO: Need to read username list
 		//File read in, store into array variable.
-
+	this.userList = {"test"};
 }
 
 /*
 Login - Exists
-Iterate through usernameList, determine if a match is found
-
+Iterate through userList, determine if a match is found
 @params: testName
-@return: Array of usernames
+@return: boolean
 */
-Login::Exists(string testName) {
-	for (int i = 0; i < this.usernameList.size(); i++) {
-		if (testName == this.usernameList[i]) {
+bool Login::Exists(string testName) {
+	for (int i = 0; i < this.userList.size(); i++) {
+		if (testName == this.userList[i]) {
 			return true;
 		}
 	}
@@ -63,34 +60,31 @@ Login::Exists(string testName) {
 /*
 Login - FillUsername
 Parse username inputted by user to meet system's username and formatting requirements
-
 @params: username
 @return: String value of 'username' + remaining filled space
 */
-Login::FillUsername(string username) {
+string Login::FillUsername(string username) {
 
 	// TODO: Check length of username, add required amount of _'s to equal 15.
 
-	return filledName;
+	return username;
 }
 
 /*
 Login - GetUser
 Define passed user information using Username class.
-
 @params: username
-@return: Username instance
+@return: String value of user's information from current user accounts file.
 */
-Login::GetUser(string username) {
+string Login::GetUser(string username) {
 	int userVal;
 
 	//Iterate through userlist to find current username
-	for (int i = 0; i < usernameList.size(); i++) {
-		if (username == usernameList[i]) {
+	for (int i = 0; i < userList.size(); i++) {
+		if (username == userList[i]) {
 			userVal = i;
 		}
 	}
 	//Define instance to be used following login
-	userInstance = Username(usernameList[i]);
-	return userInstance;
+	return userList[i];
 }
