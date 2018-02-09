@@ -12,7 +12,7 @@ class Advertise {
 		std::string itemName;
 		float minBid;
 		int auctionLength;
-		std::vector<std::string> itemList;
+		std::vector<std::string> auctionList;
 
 	public:
 		Advertise(User user);

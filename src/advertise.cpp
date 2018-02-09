@@ -27,7 +27,9 @@ Advertise::Advertise(User user){
 	// TODO: Error checking for all input
 
 	std::cout << this->itemName << " is up for auction!" << std::endl;
-	Advertise::ParseRequest(user);
+
+	//Call in main
+	//Advertise::ParseRequest(user);
 }
 
 /*
@@ -58,25 +60,25 @@ std::string Advertise::FillItemName(std::string itemName) {
 
 /*
 Advertise - ReadAuctions
-Read availiable items file, store item list within itemList
+Read availiable items file, store item list within auctionList
 @params: None
 @return: None
 */
 void Advertise::ReadAuctions() {
 	// TODO: Need to read item list
 
-	this->itemList = {"test"};
+	this->auctionList = {"test"};
 }
 
 /*
 Advertise - Exists
-Iterate through itemList, determine if a match is found
+Iterate through auctionList, determine if a match is found
 @params: testName
 @return: boolean
 */
 bool Advertise::Exists(std::string testName) {
-	for (int i = 0; i < this->itemList.size(); i++) {
-		if (testName == this->itemList[i]) {
+	for (int i = 0; i < this->auctionList.size(); i++) {
+		if (testName == this->auctionList[i]) {
 			return true;
 		}
 	}
