@@ -1,67 +1,70 @@
 /*
 Kanban
-addcredit.cpp
+refund.cpp
 */
 
-#include "addcredit.hpp"
+#include "refund.hpp"
 
 /*
-AddCredit - AddCredit
-General constructor, gets input for add credit transaction.
+Refund - Refund
+General constructor, gets input to create new auction.
 @params: User user
 @return: None
 */
-AddCredit::AddCredit(User user){
-	AddCredit::ReadUsernames();
+Refund::Refund(User user){
+	Refund::ReadUsernames();
 
 	//Check if user is admin
-	std::string testInput = "admin";
 
-	if (testInput == "admin"){
-		std::cout << "Username: ";
-		std::cin >> this->username;
-	}
+	std::cout << "Buyer Name: ";
+	std::cin >> this->buyer;
+
+  	std::cout << "Seller Name: ";
+  	std::cin  >> this->seller;
+
+	//Check if both buyer and seller exist
 
 	std::cout << "Credit: ";
-  std::cin  >> this->credit;
+ 	std::cin  >> this->credit;
+
+	//Check if credit exists in seller's balance
 
 	//Call in main
-	//AddCredit::ParseRequest(user);
+	//Refund::ParseRequest();
 }
 
 /*
-AddCredit - ParseRequest
+Refund - ParseRequest
 Parse current transaction's request into form for daily transaction file
 @params: None
 @return: string of request
 */
-std::string AddCredit::ParseRequest(){
+std::string Refund::ParseRequest(){
 	// TODO: Generate daily transaction file object for current refund
 	//			 transaction.
 
 	return "test";
 }
 
-
 /*
-AddCredit - ReadUsernames
+Refund - ReadUsernames
 Read current user accounts file, store user list within userList
 @params: None
 @return: None
 */
-void AddCredit::ReadUsernames() {
+void Refund::ReadUsernames() {
 	// TODO: Need to read username list
 		//File read in, store into array variable.
 	this->userList = {"test"};
 }
 
 /*
-AddCredit - Exists
+Refund - Exists
 Iterate through userList, determine if a match is found
 @params: testName
 @return: boolean
 */
-bool AddCredit::Exists(std::string testName) {
+bool Refund::Exists(std::string testName) {
 	for (int i = 0; i < this->userList.size(); i++) {
 		if (testName == this->userList[i]) {
 			return true;
