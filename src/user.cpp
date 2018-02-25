@@ -4,14 +4,6 @@ User.cpp
 */
 #include <iostream>
 
-class User {
-	public:
-		User(std::string newUser);
-		std::string username;
-		std::string type;
-		float credit;
-};
-
 /*
 User - User
 General constructor for User class

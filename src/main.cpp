@@ -23,10 +23,10 @@ void main() {
         std::cin >> userInput;
         
         if (loggedIn) {
-            transaction t = transaction(userInput); // transaction data input lookp
+            transaction t = transaction(userInput, currentUser); // transaction data input lookp
             
-            if (currentTransaction.valid)
-                transactions.append(currentTransaction);
+            if (t.valid)
+                transactions.append(t);
             else
                 continue; // transaction failed; class will print error
         } else if (userInput == "logout" && loggedIn) {
@@ -35,13 +35,14 @@ void main() {
             fileout f = new fileout();
             
             tranasctions.append(transaction(userInput));
-            fileout.writetransactions(transactions);
+            f.writetransactions(transactions);
         
         } else {
             if (userInput == "login") {
                 transaction t = transaction(userInput);
                 
                 loggedIn = true;
+                user = t.currentUser;
             } else {
                 std::cout << "Error: please login before attempting other transaction" << std::endl;
             }
