@@ -13,11 +13,11 @@ General Parser constructor
 Parser::Parser() {
 
 	//Daily transaction File
-	Parser::ReadDailyTrans("Daily Transactions.txt");
+	//Parser::ReadDailyTrans("data/Daily Transactions.txt");
 	//Current user accounts
-	Parser::ReadCurrentUsers("Current User Acocunts.txt");
+	Parser::ReadCurrentUsers("../data/Current User Acocunts.txt");
 	//Availiable items file
-	Parser::ReadAvailItems("Availiable Items.txt");
+	Parser::ReadAvailItems("../data/Availiable Items.txt");
 
 }
 

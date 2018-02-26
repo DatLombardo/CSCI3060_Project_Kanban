@@ -1,53 +1,72 @@
-transaction::transaction(std::string input) {
+#include "transaction.hpp"
+
+Transaction::Transaction(std::string input, std::map<std::string, User> &userList,
+      std::map<std::string, Item> &itemList) {
+    this->userList = userList;
+    this->itemList = itemList;
     if (input == "login")
         CreateLoginTransaction();
     else
         std::cout << "\t\t\tnot a transaction l0ser" << std::endl;
 }
 
-transaction::transaction(std::string input, user currentUser) {
+Transaction::Transaction(std::string input, user currentUser) {
     // check and see if transaction input is valid
-    
+
     // if it is, call respective transaction function to gather input
-    
-    
-    
+
     if (input == "logout")
         CreateLogoutTransaction();
-    
+
     else if (input == "bid")
         CreateBidTransaction();
-    
+
     else if (input == "advertise")
         CreateAdvertiseTransaction();
-    
+
     else if (input == "addcredit")
         CreateAddCreditTransaction();
-    
+
     else if (input == "create")
         CreateCreateTransaction();
-    
+
     else if (input == "refund")
         CreateRefundTransaction();
-    
+
     else if (input == "delete")
         CreateDeleteTransaction();
 
     else
         std::cout << "\t\t\tnot a transaction l0ser" << std::endl;
-    
+
 }
 
+//Transaction Code 10
 void Transaction::CreateLoginTransaction(){
   std::string username;
+  Parser parse = new Parser();
+
   std::cout << "Username: ";
 	std::cin >>  username;
-  //Generate transaction code
-
-  // TODO: get user type from file
-
-  user currentUser = user(username, userType);
-  this.currentUser = currentUser;
+  if (username.length() > 15){
+    std::cout << "ERROR: Username above limit (15 characters)" << std::endl;
+    this->valid = false;
+  }
+  else {
+    username = parse.FillUserame(username);
+    // Check if username exists in userList
+    if (this->userList.find(username) == this->userList.end()){
+      std::cout << "ERROR: Entered username does not exist." << std::endl;
+      this->valid = false;
+    }
+    else{
+      //Get the user instance at the found key.
+    	this->currentUser = this->userList[username]
+      this->transactionCode = "10_" + this->currentUser.username + "_" +
+                              this->currentUser.type + "_" + this->currentUser.credit;
+      this->valid = true;
+    }
+  }
 }
 
 
@@ -180,10 +199,10 @@ void Transaction::CreateDeleteTransaction(){
     std::string username;
     std::cout << "Username: " << std::endl;
     std::cin >> username;
-    
+
     //Delete::CancelSales();
     //Delete::RemoveUser();
-    
+
     //Constraints
     /*
      • privileged transaction - only accepted when logged in as admin user
@@ -192,4 +211,3 @@ void Transaction::CreateDeleteTransaction(){
      */
     std::cout << "Account " << username  << " Deleted." << std::endl;
 }
-

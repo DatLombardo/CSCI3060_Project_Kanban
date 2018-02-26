@@ -1,29 +1,29 @@
-#include "Item.hpp"
+#include "item.hpp"
 
-Item::Item(std::string name, std::string sellerName, std::string buyerName, int days, float bid) {
-  itemName = name;
-  seller = sellerName;
-  buyer = buyerName;
-  daysLeft = days;
-  currentBid = bid;
+Item::Item(std::string name, std::string sellerName, std::string buyerName, std::string days, std::string bid) {
+  this->itemName = name;
+  this->seller = sellerName;
+  this->buyer = buyerName;
+  this->daysLeft = days;
+  this->currentBid = bid;
 }
 
 std::string Item::getName() {
-  return itemName;
+  return this->itemName;
 }
 
 std::string Item::getSeller() {
-  return seller;
+  return this->seller;
 }
 
 std::string Item::getBuyer() {
-  return buyer;
+  return this->buyer;
 }
 
-int Item::getDaysLeft() {
-  return daysLeft;
+std::string Item::getDaysLeft() {
+  return this->daysLeft;
 }
 
-float Item::getBid() {
-  return currentBid;
+std::string Item::getBid() {
+  return this->currentBid;
 }

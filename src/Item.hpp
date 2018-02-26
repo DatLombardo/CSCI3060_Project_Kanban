@@ -1,16 +1,15 @@
 class Item {
   public:
-    Item(std::string name, std::string sellerName, std::string buyerName, int days, float bid);
+    Item(std::string name, std::string sellerName, std::string buyerName, std::string days, std::string bid);
     std::string getName();
     std::string getSeller();
     std::string getBuyer();
-    int getDaysLeft();
-    float getBid();
-
+    std::string getDaysLeft();
+    std::string getBid();
   private:
     std::string itemName;
     std::string seller;
     std::string buyer;
-    int daysLeft;
-    float currentBid;
+    std::string daysLeft;
+    std::string currentBid;
 };

@@ -4,7 +4,7 @@
     This class will handle file output given a list of valid transactions.
 */
 
-class fileout {
+class Fileout {
 private:
     std::map<std::string, std::string> transactionTypeMap = {
         {"login", "10"},
@@ -16,4 +16,6 @@ private:
         {"delete", "02"},
         {"create", "01"}
     };
+public:
+  Fileout();
 }

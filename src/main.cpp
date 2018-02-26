@@ -7,40 +7,41 @@
 
 #include <iostream>
 #include <vector>
+#include "transaction.cpp"
 
 void main() {
     std::cout << "Welcome to TerribleAuction\nBy: Kanban Group™\n" << std::endl;
-    
+
     bool loggedIn = false;
     user currentUser = null;
-    
-    std::vector<transaction> transactions;
-    
+
+    std::vector<Transaction> transactions;
+
     while (true) {
         std::string userInput;
 
         std::cout << "Please enter a transaction code: ";
         std::cin >> userInput;
-        
+
         if (userInput == "logout" && loggedIn) {
             // user has chose to logout, write transactions to appropriate file(s)
-            
-            fileout f = new fileout();
-            
-            tranasctions.append(transaction(userInput));
+
+            fileout f = new Fileout();
+
+            tranasctions.append(Transaction(userInput));
             f.writetransactions(transactions);
-        
+
         } else if (loggedIn) {
-            transaction t = transaction(userInput, currentUser); // transaction data input lookp
-            
+            Transaction t = Transaction(userInput, currentUser); // transaction data input lookp
+
             if (t.valid)
                 transactions.append(t);
             else
                 continue; // transaction failed; class will print error
         } else {
             if (userInput == "login") {
-                transaction t = transaction(userInput);
-                
+                Transaction t = Transaction(userInput);
+
                 loggedIn = true;
                 user = t.currentUser;
 
@@ -48,7 +49,7 @@ void main() {
             } else {
                 std::cout << "Error: please login before attempting other transaction" << std::endl;
             }
-            
+
         }
     }
 
