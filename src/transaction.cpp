@@ -61,7 +61,7 @@ void Transaction::CreateLoginTransaction(){
     }
     else{
       //Get the user instance at the found key.
-    	this->currentUser = this->userList[username]
+    	this->currentUser = this->userList[username];
       this->transactionCode = "10_" + this->currentUser.username + "_" +
                               this->currentUser.type + "_" + this->currentUser.credit;
       this->valid = true;
@@ -69,11 +69,15 @@ void Transaction::CreateLoginTransaction(){
   }
 }
 
-
+//Transaction Code 00
 void Transaction::CreateLogoutTransaction(){
   std::cout << "Logging out." << std::endl;
+  this->transactionCode = "00_" + this->currentUser.username + "_" +
+                          this->currentUser.type + "_" + this->currentUser.credit;
+  this->valid = true;
   //Generate transaction code
 }
+
 
 void Transaction::CreateBidTransaction(){
   std::string itemName, numDays, sellerName, bidAmount;
@@ -136,20 +140,112 @@ void Transaction::CreateAdvertiseTransaction(){
 }
 
 void Transaction::CreateAddCreditTransaction(){
-  std::string username, credit;
-  std::cout << "Username: ";
-  std::cin >>  username;
+  std::string username
+  float credit;
+  //Define Parser
+  Parser parse = new Parser();
+  //Get daily transaction file
+  std::vector<std::string> dailyTrans = parse.GetDailyTrans();
+  User userAdd;
+  if (this->currentUser.type == "AA"){
+    std::cout << "Username: ";
+    std::cin >>  username;
 
-  //Check to see if the user is an admin
+    std::cout << "Credit: ";
+    std::cin  >>  credit;
 
-  std::cout << "Credit: ";
-  std::cin  >>  credit;
-  //Constraints
-  /*
-  • In admin mode, the username has to be an existing username in the system.
-  • A maximum of $1000.00 can be added to an account in a given session.
-  */
-  //Generate transaction code
+    username = parse.FillUserame(username);
+    // Check if username exists in userList
+    if (this->userList.find(username) == this->userList.end()){
+      std::cout << "ERROR: Entered username does not exist." << std::endl;
+      this->valid = false;
+    }
+    //username exists
+    else{
+      User userAdd = this->userList[username];
+      if (credit <= 1000.00){
+        //Check to see if there are other pending transactions for this user
+        std::string testString;
+        float testCredit;
+
+        for (auto i : dailyTrans){
+          testString = i.substr(0,21);
+          testCredit = std::strtof(i.substr(21,30).c_str(), 0);
+          //06_UUUUUUUUUUUUUUU_TT_
+          if (testString == ("06_" + userAdd.username + "_" + userAdd.type + "_")){
+            //Check to see new added credit and pending isn't above 1000
+            if ((testCredit + credit) <= 1000.00){
+              credit = parse.ParseCredit(std::to_string(credit));
+              credit = parse.FillCredit(credit);
+              this->transactionCode = "06_" + userAdd.username + "_" +
+                                      userAdd.type + "_" + credit;
+              this->valid = true;
+              return;
+            }
+            //Exceeds 1000
+            else {
+              std::cout << "ERROR: Add credit limit over range (currently pending $" + testCredit + ")" << std::endl;
+              this->valid = false;
+            }
+          }
+
+        }
+        //No other add credits for current user found
+        credit = parse.ParseCredit(std::to_string(credit));
+        credit = parse.FillCredit(credit);
+        this->transactionCode = "06_" + userAdd.username + "_" +
+                                userAdd.type + "_" + credit;
+        this->valid = true;
+      }
+      else{
+        std::cout << "ERROR: Credit inputted above maximum value ($1000.00)" << std::endl;
+        this->valid = false;
+      }
+    }
+  }
+  //Standard user attempts to add credit.
+  else{
+    std::cout << "Credit: ";
+    std::cin  >>  credit;
+
+    if (credit <= 1000.00){
+      //Check to see if there are other pending transactions for this user
+      std::string testString;
+      float testCredit;
+      for (auto i : dailyTrans){
+        testString = i.substr(0,21);
+        testCredit = std::strtof(i.substr(21,30).c_str(), 0);
+        //06_UUUUUUUUUUUUUUU_TT_
+        if (testString == ("06_" + this->currentUser.username + "_" + this->currentUser.type + "_")){
+          //Check to see new added credit and pending isn't above 1000
+          if ((testCredit + credit) <= 1000.00){
+            credit = parse.ParseCredit(std::to_string(credit));
+            credit = parse.FillCredit(credit);
+            this->transactionCode = "06_" + this->currentUser.username + "_" +
+                                    this->currentUser.type + "_" + credit;
+            this->valid = true;
+            return;
+          }
+          //Exceeds 1000
+          else {
+            std::cout << "ERROR: Add credit limit over range (currently pending $" + testCredit + ")" << std::endl;
+            this->valid = false;
+          }
+        }
+
+      }
+      //No other add credits for current user found
+      credit = parse.ParseCredit(std::to_string(credit));
+      credit = parse.FillCredit(credit);
+      this->transactionCode = "06_" + this->currentUser.username + "_" +
+                              this->currentUser.type + "_" + credit;
+      this->valid = true;
+    }
+    else{
+      std::cout << "ERROR: Credit inputted above maximum value ($1000.00)" << std::endl;
+      this->valid = false;
+    }
+  }
 }
 
 void Transaction::CreateCreateTransaction(){

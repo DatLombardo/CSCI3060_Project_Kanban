@@ -5,6 +5,7 @@ parser.hpp
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include "user.cpp"
 
 class Parser {
@@ -26,4 +27,5 @@ class Parser {
 		std::vector<std::string> GetDailyTrans();
 		std::vector<std::string> GetCurrentUsers();
 		std::vector<std::string> GetAvailItems();
+		std::string ParseCredit(std::string credit);
 };

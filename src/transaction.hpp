@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "user.cpp"
 #include "item.cpp"
 #include "parser.cpp"
@@ -8,9 +9,9 @@ class Transaction {
   public:
       bool valid = false;
       std::string transactionCode;
-      Transaction(std::string input, user currentUser);
-      Transaction(std::string input, std::map<std::string, User> &userList,
-            std::map<std::string, Item> &itemList);
+      Transaction(std::string input, user currentUser,
+            std::map<std::string, User> &userList, std::map<std::string, Item> &itemList);
+      Transaction(std::string input, std::map<std::string, User> &userList);
       void CreateLoginTransaction();
       void CreateLogoutTransaction();
       void CreateBidTransaction();

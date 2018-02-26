@@ -13,7 +13,7 @@ General Parser constructor
 Parser::Parser() {
 
 	//Daily transaction File
-	//Parser::ReadDailyTrans("data/Daily Transactions.txt");
+	Parser::ReadDailyTrans("data/Daily Transactions.txt");
 	//Current user accounts
 	Parser::ReadCurrentUsers("../data/Current User Acocunts.txt");
 	//Availiable items file
@@ -207,4 +207,9 @@ std::string Parser::FillBid(std::string bid) {
 	} else{
 		return bid;
 	}
+}
+
+std::string Parser::ParseCredit(std::string credit){
+	credit.erase(std::remove(credit.begin(), credit.end(), '.'), credit.end());
+	return credit;
 }
