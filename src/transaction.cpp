@@ -4,10 +4,12 @@ Transaction::Transaction(std::string input, std::map<std::string, User> &userLis
       std::map<std::string, Item> &itemList) {
     this->userList = userList;
     this->itemList = itemList;
-    if (input == "login")
+    if (input == "login"){
+        this->transactionCode = "10";
         CreateLoginTransaction();
-    else
+    } else{
         std::cout << "\t\t\tnot a transaction l0ser" << std::endl;
+    }
 }
 
 Transaction::Transaction(std::string input, user currentUser) {
@@ -16,24 +18,31 @@ Transaction::Transaction(std::string input, user currentUser) {
     // if it is, call respective transaction function to gather input
 
     if (input == "logout")
+        this->transactionCode = "00";
         CreateLogoutTransaction();
 
     else if (input == "bid")
+        this->transactionCode = "04";
         CreateBidTransaction();
 
     else if (input == "advertise")
+        this->transactionCode = "03";
         CreateAdvertiseTransaction();
 
     else if (input == "addcredit")
+        this->transactionCode = "06";
         CreateAddCreditTransaction();
 
     else if (input == "create")
+        this->transactionCode = "01";
         CreateCreateTransaction();
 
     else if (input == "refund")
+        this->transactionCode = "05";
         CreateRefundTransaction();
 
     else if (input == "delete")
+        this->transactionCode = "02";
         CreateDeleteTransaction();
 
     else
@@ -44,26 +53,22 @@ Transaction::Transaction(std::string input, user currentUser) {
 //Transaction Code 10
 void Transaction::CreateLoginTransaction(){
   std::string username;
-  Parser parse = new Parser();
-
   std::cout << "Username: ";
 	std::cin >>  username;
+  
   if (username.length() > 15){
     std::cout << "ERROR: Username above limit (15 characters)" << std::endl;
     this->valid = false;
   }
   else {
-    username = parse.FillUserame(username);
     // Check if username exists in userList
-    if (this->userList.find(username) == this->userList.end()){
+    if (this->userList.count(username) == 0){
       std::cout << "ERROR: Entered username does not exist." << std::endl;
       this->valid = false;
     }
     else{
-      //Get the user instance at the found key.
+      //Create valid transaction here
     	this->currentUser = this->userList[username];
-      this->transactionCode = "10_" + this->currentUser.username + "_" +
-                              this->currentUser.type + "_" + this->currentUser.credit;
       this->valid = true;
     }
   }
@@ -72,10 +77,8 @@ void Transaction::CreateLoginTransaction(){
 //Transaction Code 00
 void Transaction::CreateLogoutTransaction(){
   std::cout << "Logging out." << std::endl;
-  this->transactionCode = "00_" + this->currentUser.username + "_" +
-                          this->currentUser.type + "_" + this->currentUser.credit;
   this->valid = true;
-  //Generate transaction code
+  //Create valid transaction here
 }
 
 
@@ -84,6 +87,7 @@ void Transaction::CreateBidTransaction(){
   std::cout << "Item Name: ";
 	std::cin >>  itemName;
 
+  std::cout
   std::cout << "Number of Days Remaining: ";
   std::cin >> numDays;
 
@@ -142,120 +146,70 @@ void Transaction::CreateAdvertiseTransaction(){
 void Transaction::CreateAddCreditTransaction(){
   std::string username
   float credit;
-  //Define Parser
-  Parser parse = new Parser();
-  //Get daily transaction file
-  std::vector<std::string> dailyTrans = parse.GetDailyTrans();
   User userAdd;
+  std::cout << "Username: ";
+  std::cin >>  username;
+
   if (this->currentUser.type == "AA"){
-    std::cout << "Username: ";
-    std::cin >>  username;
+    
+    //Check if user exists
+    if (this->userList.count(username) > 0){
+      credit = GetCreditInput();
+      newCredit = this->userList[username].credits + credit;
 
-    std::cout << "Credit: ";
-    std::cin  >>  credit;
-
-    username = parse.FillUserame(username);
-    // Check if username exists in userList
-    if (this->userList.find(username) == this->userList.end()){
+      //Check if new credit amount exceeds limit
+      if (newCredit > 999999.00){
+        std::cout << "ERROR: New credit amount exceeds limit." << std::endl;
+        this->valid = false;
+      } else if (credit > 1000.00){ 
+      //Check if user is adding more than 1000 credits
+        std::cout << "ERROR: Cannot add more than 1000 credits in one session." << std::endl;
+        this->valid = false;
+      }else{
+        //Create valid transaction here
+        this->targetUser = this->userList[username];
+        this->credit = credit;
+        this->valid = true;
+      }
+    } else{
       std::cout << "ERROR: Entered username does not exist." << std::endl;
       this->valid = false;
     }
-    //username exists
-    else{
-      User userAdd = this->userList[username];
-      if (credit <= 1000.00){
-        //Check to see if there are other pending transactions for this user
-        std::string testString;
-        float testCredit;
-
-        for (auto i : dailyTrans){
-          testString = i.substr(0,21);
-          testCredit = std::strtof(i.substr(21,30).c_str(), 0);
-          //06_UUUUUUUUUUUUUUU_TT_
-          if (testString == ("06_" + userAdd.username + "_" + userAdd.type + "_")){
-            //Check to see new added credit and pending isn't above 1000
-            if ((testCredit + credit) <= 1000.00){
-              credit = parse.ParseCredit(std::to_string(credit));
-              credit = parse.FillCredit(credit);
-              this->transactionCode = "06_" + userAdd.username + "_" +
-                                      userAdd.type + "_" + credit;
-              this->valid = true;
-              return;
-            }
-            //Exceeds 1000
-            else {
-              std::cout << "ERROR: Add credit limit over range (currently pending $" + testCredit + ")" << std::endl;
-              this->valid = false;
-            }
-          }
-
-        }
-        //No other add credits for current user found
-        credit = parse.ParseCredit(std::to_string(credit));
-        credit = parse.FillCredit(credit);
-        this->transactionCode = "06_" + userAdd.username + "_" +
-                                userAdd.type + "_" + credit;
-        this->valid = true;
-      }
-      else{
-        std::cout << "ERROR: Credit inputted above maximum value ($1000.00)" << std::endl;
-        this->valid = false;
-      }
-    }
   }
+
   //Standard user attempts to add credit.
   else{
-    std::cout << "Credit: ";
-    std::cin  >>  credit;
+    credit = GetCreditInput();
 
-    if (credit <= 1000.00){
-      //Check to see if there are other pending transactions for this user
-      std::string testString;
-      float testCredit;
-      for (auto i : dailyTrans){
-        testString = i.substr(0,21);
-        testCredit = std::strtof(i.substr(21,30).c_str(), 0);
-        //06_UUUUUUUUUUUUUUU_TT_
-        if (testString == ("06_" + this->currentUser.username + "_" + this->currentUser.type + "_")){
-          //Check to see new added credit and pending isn't above 1000
-          if ((testCredit + credit) <= 1000.00){
-            credit = parse.ParseCredit(std::to_string(credit));
-            credit = parse.FillCredit(credit);
-            this->transactionCode = "06_" + this->currentUser.username + "_" +
-                                    this->currentUser.type + "_" + credit;
-            this->valid = true;
-            return;
-          }
-          //Exceeds 1000
-          else {
-            std::cout << "ERROR: Add credit limit over range (currently pending $" + testCredit + ")" << std::endl;
-            this->valid = false;
-          }
-        }
-
+    //Check if new credit amount exceeds limit
+      if (newCredit > 999999.00){
+        std::cout << "ERROR: New credit amount exceeds limit." << std::endl;
+        this->valid = false;
+      } else if (credit > 1000.00){ 
+        //Check if user is adding more than 1000 credits
+        std::cout << "ERROR: Cannot add more than 1000 credits in one session." << std::endl;
+        this->valid = false;
+      } else{
+        //Create valid transaction here
+        this->targetUser = this->userList[username];
+        this->credit = credit;
+        this->valid = true;
       }
-      //No other add credits for current user found
-      credit = parse.ParseCredit(std::to_string(credit));
-      credit = parse.FillCredit(credit);
-      this->transactionCode = "06_" + this->currentUser.username + "_" +
-                              this->currentUser.type + "_" + credit;
-      this->valid = true;
-    }
-    else{
-      std::cout << "ERROR: Credit inputted above maximum value ($1000.00)" << std::endl;
-      this->valid = false;
-    }
+
   }
 }
 
 void Transaction::CreateCreateTransaction(){
-
+  std::string username, type;
+  float credit;
+  std::cout << "Username: ";
+  std::cin >> username;
+  std::cout << "Account Type: ";
+  std::cin >> type;
+  credit = GetCreditInput();
   //Checks if user is admin to proceed
   if (this->currentUser.type == "AA"){
-    std::string username, type;
-    float credit;
-    std::cout << "Username: ";
-    std::cin >> username;
+    
 
     if (strlen(username) > 15){
     //Rejects overly long username
@@ -266,34 +220,20 @@ void Transaction::CreateCreateTransaction(){
       std::cout << "ERROR: Username already exists." << std::endl;
       this->valid = false;
     } else{
-
-      bool validFloat = false;
-      while(!validFloat){
-      //Checks that user input is a valid value for credits
-        std::cout << "Credit: ";
-        std::cin >> credit;
-
-        if (std::cin.fail()){
-          std::cout << "Please enter a number." << endl;
-          std::cin.clear();
-          std::cin.ignore();
-        } else {
-          validFloat = true;
-        }
-      }
-    
       if (credit > 999999.00){
       //Rejects credit value over max
         std::cout << "ERROR: Current user is not an admin." << std::endl;
         this->valid = false;
       } else{
-        std::cout << "Account Type: ";
-        std::cin >> type;
+        if (validTypes.count(type) > 0){
+          //Create valid transaction here
+          this->targetUser = User(username, type, credit);
+          std::cout << "Account Created." << std::endl;
+          this->valid = true;
+        } else{
+          this->valid = false;
+        }
         
-        //Create transaction here
-        std::cout << "Account Created." << std::endl;
-        this->valid = true;
-      }
     }
   } else{
     std::cout << "ERROR: Current user is not an admin." << std::endl;
@@ -311,36 +251,37 @@ void Transaction::CreateCreateTransaction(){
 }
 
 void Transaction::CreateRefundTransaction(){
-  if (this->currentUser.type == "AA"){
-    std::string buyer, seller;
-    float credit;
-    //Check if user is admin
+  std::string buyer, seller;
+  float credit;
+  std::cout << "Buyer Name: ";
+  std::cin >> buyer;
+  std::cout << "Seller Name: ";
+  std::cin  >> seller;
+  credit = GetCreditInput();
 
-    std::cout << "Buyer Name: ";
-    std::cin >> buyer;
+  if (this->currentUser.type == "AA"){
+    //Check if user is admin
 
     //Checks that buyer exists
     if (this->userList.find(buyer) != this->userList.end()){
-      std::cout << "Seller Name: ";
-      std::cin  >> seller;
-
+      
       //Checks that seller exists
       if (this->userList.find(seller) != this->userList.end()){
 
-        bool validFloat = false;
-        while(!validFloat){
-        //Checks that user input is a valid value for credits
-          std::cout << "Credit: ";
-          std::cin >> credit;
+        User sellerUser = this->userList[seller];
 
-          if (std::cin.fail()){
-            std::cout << "Please enter a number." << endl;
-            std::cin.clear();
-            std::cin.ignore();
-          } else {
-            validFloat = true;
-          }
+        //Checks if seller has enough credits to refund
+        if (sellerUser.credits < credit){
+          std::cout << "ERROR: Seller does not have enough credits." << std::endl;
+          this->valid = false;
+        } else{
+          this->buyer = this->userList[buyer];
+          this->seller = this->userList[seller];
+          this->credit = credit;
+
+          this->valid = true;
         }
+
       } else{
         std::cout << "ERROR: Seller does not exist." << std::endl;
         this->valid = false;
@@ -349,7 +290,6 @@ void Transaction::CreateRefundTransaction(){
       std::cout << "ERROR: Buyer does not exist." << std::endl;
       this->valid = false;
     }
-    
 
   } else{
     std::cout << "ERROR: Current user is not an admin." << std::endl;
@@ -362,27 +302,24 @@ void Transaction::CreateRefundTransaction(){
   • Buyer and seller both must be current users
   */
 
-	std::cout << "Credit: ";
- 	std::cin  >> credit;
-
 	//Check if credit exists in seller's balance
 }
 
 void Transaction::CreateDeleteTransaction(){
+  std::string username;
+  std::cout << "Username: " << std::endl;
+  std::cin >> username;
 
   //Checks that user is admin
   if (this->currentUser.type == "AA"){
-    std::string username;
-    std::cout << "Username: " << std::endl;
-    std::cin >> username;
-
     //Checks that user is not deleting itself
     if (strcmp(this.currentUser.name, username) == 0){
       //Checks that user to be deleted exists
-      if (this->userList.find(buyer) != this->userList.end()){
-
-        //Create transaction here
+      if (this->userList.count(username > 0)){
+        //Designate deleted user here
+        this->targetUser = this->userList[username];
         std::cout << "Account " << username  << " Deleted." << std::endl;
+        this->valid = true;
       } else{
         std::cout << "ERROR: User does not exist." << std::endl;
         this->valid = false;
@@ -398,7 +335,6 @@ void Transaction::CreateDeleteTransaction(){
     this->valid = false;
   }
     
-
     //Delete::CancelSales();
     //Delete::RemoveUser();
 
@@ -409,4 +345,22 @@ void Transaction::CreateDeleteTransaction(){
      • no further transactions should be accepted on a deleted user’s available inventory of items for sale.
      */
     
+}
+
+float Transaction::GetCreditInput(){
+  float credit;
+  bool validFloat = false;
+  while(!validFloat){
+  //Checks that user input is a valid value for credits
+    std::cout << "Credit: ";
+    std::cin >> credit;
+
+    if (std::cin.fail()){
+      std::cout << "Please enter a number." << endl;
+      std::cin.clear();
+      std::cin.ignore();
+    } else {
+      return credit;
+    }
+  }
 }

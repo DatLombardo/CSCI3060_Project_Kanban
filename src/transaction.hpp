@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <boost/algorithm/string.hpp>
 #include "User.cpp"
 #include "item.cpp"
@@ -12,8 +13,8 @@ class Transaction {
       bool valid = false;
       std::string transactionCode;
       Transaction(std::string input, User currentUser,
-            std::map<std::string, User> &UserList, std::map<std::string, Item> &itemList);
-      Transaction(std::string input, std::map<std::string, User> &UserList);
+            std::map<std::string, User> &userList, std::map<std::string, Item> &itemList);
+      Transaction(std::string input, std::map<std::string, User> &userList);
       void CreateLoginTransaction();
       void CreateLogoutTransaction();
       void CreateBidTransaction();
@@ -22,9 +23,18 @@ class Transaction {
       void CreateCreateTransaction();
       void CreateRefundTransaction();
       void CreateDeleteTransaction();
+      float GetCreditInput();
   private:
       User currentUser;
-      std::map<std::string, User> UserList;
+      User targetUser;
+      User buyer;
+      User seller;
+      Item item;
+      float credit;
+      float minBid;
+      int daysToExpiry;
+      std::set<std::string> validTypes = {"AA", "FS", "SS", "BS"};
+      std::map<std::string, User> userList;
       std::map<std::string, Item> itemList;
       std::string transactionType = "";
 };
