@@ -249,15 +249,56 @@ void Transaction::CreateAddCreditTransaction(){
 }
 
 void Transaction::CreateCreateTransaction(){
-  std::string username, type, credit;
-  std::cout << "Username: ";
-	std::cin >> username;
 
-	std::cout << "Account Type: ";
-	std::cin >> type;
+  //Checks if user is admin to proceed
+  if (this->currentUser.type == "AA"){
+    std::string username, type;
+    float credit;
+    std::cout << "Username: ";
+    std::cin >> username;
 
-	std::cout << "Credit: ";
-	std::cin >> credit;
+    if (strlen(username) > 15){
+    //Rejects overly long username
+      std::cout << "ERROR: Username length cannot exceed 15 characters." << std::endl;
+      this->valid = false;
+    } else if(this->userList.find(username) != this->userList.end()){
+    //Rejects existing username
+      std::cout << "ERROR: Username already exists." << std::endl;
+      this->valid = false;
+    } else{
+
+      bool validFloat = false;
+      while(!validFloat){
+      //Checks that user input is a valid value for credits
+        std::cout << "Credit: ";
+        std::cin >> credit;
+
+        if (std::cin.fail()){
+          std::cout << "Please enter a number." << endl;
+          std::cin.clear();
+          std::cin.ignore();
+        } else {
+          validFloat = true;
+        }
+      }
+    
+      if (credit > 999999.00){
+      //Rejects credit value over max
+        std::cout << "ERROR: Current user is not an admin." << std::endl;
+        this->valid = false;
+      } else{
+        std::cout << "Account Type: ";
+        std::cin >> type;
+        
+        //Create transaction here
+        std::cout << "Account Created." << std::endl;
+        this->valid = true;
+      }
+    }
+  } else{
+    std::cout << "ERROR: Current user is not an admin." << std::endl;
+    this->valid = false;
+  }
   //Constraints
   /*
   • privileged transaction - only accepted when logged in as admin user
@@ -267,18 +308,54 @@ void Transaction::CreateCreateTransaction(){
   */
   // Generate transaction code
 
-	std::cout << "Account Created." << std::endl;
 }
 
 void Transaction::CreateRefundTransaction(){
-  std::string buyer, seller, credit;
-  //Check if user is admin
+  if (this->currentUser.type == "AA"){
+    std::string buyer, seller;
+    float credit;
+    //Check if user is admin
 
-	std::cout << "Buyer Name: ";
-	std::cin >> buyer;
+    std::cout << "Buyer Name: ";
+    std::cin >> buyer;
 
-  std::cout << "Seller Name: ";
-  std::cin  >> seller;
+    //Checks that buyer exists
+    if (this->userList.find(buyer) != this->userList.end()){
+      std::cout << "Seller Name: ";
+      std::cin  >> seller;
+
+      //Checks that seller exists
+      if (this->userList.find(seller) != this->userList.end()){
+
+        bool validFloat = false;
+        while(!validFloat){
+        //Checks that user input is a valid value for credits
+          std::cout << "Credit: ";
+          std::cin >> credit;
+
+          if (std::cin.fail()){
+            std::cout << "Please enter a number." << endl;
+            std::cin.clear();
+            std::cin.ignore();
+          } else {
+            validFloat = true;
+          }
+        }
+      } else{
+        std::cout << "ERROR: Seller does not exist." << std::endl;
+        this->valid = false;
+      }
+    } else{
+      std::cout << "ERROR: Buyer does not exist." << std::endl;
+      this->valid = false;
+    }
+    
+
+  } else{
+    std::cout << "ERROR: Current user is not an admin." << std::endl;
+    this->valid = false;
+  }
+  
 
   //Constraints
   /*
@@ -292,9 +369,35 @@ void Transaction::CreateRefundTransaction(){
 }
 
 void Transaction::CreateDeleteTransaction(){
+
+  //Checks that user is admin
+  if (this->currentUser.type == "AA"){
     std::string username;
     std::cout << "Username: " << std::endl;
     std::cin >> username;
+
+    //Checks that user is not deleting itself
+    if (strcmp(this.currentUser.name, username) == 0){
+      //Checks that user to be deleted exists
+      if (this->userList.find(buyer) != this->userList.end()){
+
+        //Create transaction here
+        std::cout << "Account " << username  << " Deleted." << std::endl;
+      } else{
+        std::cout << "ERROR: User does not exist." << std::endl;
+        this->valid = false;
+      }
+
+    } else{
+      std::cout << "ERROR: User cannot delete itself." << std::endl;
+      this->valid = false;
+    }
+
+  } else{
+    std::cout << "ERROR: Current user is not an admin." << std::endl;
+    this->valid = false;
+  }
+    
 
     //Delete::CancelSales();
     //Delete::RemoveUser();
@@ -305,5 +408,5 @@ void Transaction::CreateDeleteTransaction(){
      • username must be the name of an existing user but not the name of the current user
      • no further transactions should be accepted on a deleted user’s available inventory of items for sale.
      */
-    std::cout << "Account " << username  << " Deleted." << std::endl;
+    
 }
