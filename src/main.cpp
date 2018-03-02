@@ -2,7 +2,7 @@
     Kanban
 
     This c++ file will control the main input loop, and
-    deal with user input appropriately.
+    deal with User input appropriately.
 */
 
 #include <iostream>
@@ -13,37 +13,37 @@ void main() {
     std::cout << "Welcome to TerribleAuction\nBy: Kanban Group™\n" << std::endl;
 
     bool loggedIn = false;
-    user currentUser = null;
+    User currentUser = null;
 
     std::vector<Transaction> transactions;
 
     while (true) {
-        std::string userInput;
+        std::string UserInput;
 
         std::cout << "Please enter a transaction code: ";
-        std::cin >> userInput;
+        std::cin >> UserInput;
 
-        if (userInput == "logout" && loggedIn) {
-            // user has chose to logout, write transactions to appropriate file(s)
+        if (UserInput == "logout" && loggedIn) {
+            // User has chose to logout, write transactions to appropriate file(s)
 
             fileout f = new Fileout();
 
-            tranasctions.append(Transaction(userInput));
+            tranasctions.append(Transaction(UserInput));
             f.writetransactions(transactions);
 
         } else if (loggedIn) {
-            Transaction t = Transaction(userInput, currentUser); // transaction data input lookp
+            Transaction t = Transaction(UserInput, currentUser); // transaction data input lookp
 
             if (t.valid)
                 transactions.append(t);
             else
                 continue; // transaction failed; class will print error
         } else {
-            if (userInput == "login") {
-                Transaction t = Transaction(userInput);
+            if (UserInput == "login") {
+                Transaction t = Transaction(UserInput);
 
                 loggedIn = true;
-                user = t.currentUser;
+                User = t.currentUser;
 
                 transactions.append(t);
             } else {

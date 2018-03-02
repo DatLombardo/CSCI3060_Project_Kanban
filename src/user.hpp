@@ -1,7 +1,7 @@
 class User {
 	public:
-		User(std::string newUser);
+		User(std::string username, std::string userType, float credits);
 		std::string username;
 		std::string type;
-		std::string credit;
+		float credits;
 };

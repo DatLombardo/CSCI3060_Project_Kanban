@@ -6,7 +6,8 @@ parser.hpp
 #include <vector>
 #include <string>
 #include <algorithm>
-#include "user.cpp"
+#include <boost/algorithm/string.hpp>
+#include "User.cpp"
 
 class Parser {
 	private:
@@ -15,11 +16,11 @@ class Parser {
 		std::vector<std::string> availItems;
 	public:
 		Parser();
-		void ReadDailyTrans();
-		void ReadCurrentUsers();
-		void ReadAvailItems();
+		void ReadDailyTrans(std::string fileName);
+		void ReadCurrentUsers(std::string fileName));
+		void ReadAvailItems(std::string fileName));
 		bool Exists(std::string testName);
-		std::string FillUsername(std::string username);
+		std::string FillUsername(std::string Username);
 		std::string FillCredit(std::string credit);
 		std::string FillItemName(std::string itemName);
 		std::string FillNumOfDays(std::string numDays);

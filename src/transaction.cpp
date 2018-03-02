@@ -1,8 +1,8 @@
 #include "transaction.hpp"
 
-Transaction::Transaction(std::string input, std::map<std::string, User> &userList,
+Transaction::Transaction(std::string input, std::map<std::string, User> &UserList,
       std::map<std::string, Item> &itemList) {
-    this->userList = userList;
+    this->UserList = UserList;
     this->itemList = itemList;
     if (input == "login")
         CreateLoginTransaction();
@@ -10,7 +10,7 @@ Transaction::Transaction(std::string input, std::map<std::string, User> &userLis
         std::cout << "\t\t\tnot a transaction l0ser" << std::endl;
 }
 
-Transaction::Transaction(std::string input, user currentUser) {
+Transaction::Transaction(std::string input, User currentUser) {
     // check and see if transaction input is valid
 
     // if it is, call respective transaction function to gather input
@@ -43,26 +43,26 @@ Transaction::Transaction(std::string input, user currentUser) {
 
 //Transaction Code 10
 void Transaction::CreateLoginTransaction(){
-  std::string username;
-  Parser parse = new Parser();
+  std::string Username;
+  Parser parse = Parser();
 
   std::cout << "Username: ";
-	std::cin >>  username;
-  if (username.length() > 15){
+	std::cin >>  Username;
+  if (Username.length() > 15){
     std::cout << "ERROR: Username above limit (15 characters)" << std::endl;
     this->valid = false;
   }
   else {
-    username = parse.FillUserame(username);
-    // Check if username exists in userList
-    if (this->userList.find(username) == this->userList.end()){
-      std::cout << "ERROR: Entered username does not exist." << std::endl;
+    Username = parse.FillUserame(Username);
+    // Check if Username exists in UserList
+    if (this->UserList.find(Username) == this->UserList.end()){
+      std::cout << "ERROR: Entered Username does not exist." << std::endl;
       this->valid = false;
     }
     else{
-      //Get the user instance at the found key.
-    	this->currentUser = this->userList[username];
-      this->transactionCode = "10_" + this->currentUser.username + "_" +
+      //Get the User instance at the found key.
+    	this->currentUser = this->UserList[Username];
+      this->transactionCode = "10_" + this->currentUser.Username + "_" +
                               this->currentUser.type + "_" + this->currentUser.credit;
       this->valid = true;
     }
@@ -72,7 +72,7 @@ void Transaction::CreateLoginTransaction(){
 //Transaction Code 00
 void Transaction::CreateLogoutTransaction(){
   std::cout << "Logging out." << std::endl;
-  this->transactionCode = "00_" + this->currentUser.username + "_" +
+  this->transactionCode = "00_" + this->currentUser.Username + "_" +
                           this->currentUser.type + "_" + this->currentUser.credit;
   this->valid = true;
   //Generate transaction code
@@ -105,7 +105,7 @@ void Transaction::CreateBidTransaction(){
   • new bid must be at least 5% higher than the previous highest bid (this restriction does not apply in privileged mode)
   */
 
-  //Check if bid is more than 5% of current bid amount, unless user is admin.
+  //Check if bid is more than 5% of current bid amount, unless User is admin.
 
   //Generate transaction code
 
@@ -140,31 +140,31 @@ void Transaction::CreateAdvertiseTransaction(){
 }
 
 void Transaction::CreateAddCreditTransaction(){
-  std::string username
+  std::string Username
   float credit;
   //Define Parser
-  Parser parse = new Parser();
+  Parser parse = Parser();
   //Get daily transaction file
   std::vector<std::string> dailyTrans = parse.GetDailyTrans();
-  User userAdd;
+  User UserAdd;
   if (this->currentUser.type == "AA"){
     std::cout << "Username: ";
-    std::cin >>  username;
+    std::cin >>  Username;
 
     std::cout << "Credit: ";
     std::cin  >>  credit;
 
-    username = parse.FillUserame(username);
-    // Check if username exists in userList
-    if (this->userList.find(username) == this->userList.end()){
-      std::cout << "ERROR: Entered username does not exist." << std::endl;
+    Username = parse.FillUserame(Username);
+    // Check if Username exists in UserList
+    if (this->UserList.find(Username) == this->UserList.end()){
+      std::cout << "ERROR: Entered Username does not exist." << std::endl;
       this->valid = false;
     }
-    //username exists
+    //Username exists
     else{
-      User userAdd = this->userList[username];
+      User UserAdd = this->UserList[Username];
       if (credit <= 1000.00){
-        //Check to see if there are other pending transactions for this user
+        //Check to see if there are other pending transactions for this User
         std::string testString;
         float testCredit;
 
@@ -172,13 +172,13 @@ void Transaction::CreateAddCreditTransaction(){
           testString = i.substr(0,21);
           testCredit = std::strtof(i.substr(21,30).c_str(), 0);
           //06_UUUUUUUUUUUUUUU_TT_
-          if (testString == ("06_" + userAdd.username + "_" + userAdd.type + "_")){
+          if (testString == ("06_" + UserAdd.Username + "_" + UserAdd.type + "_")){
             //Check to see new added credit and pending isn't above 1000
             if ((testCredit + credit) <= 1000.00){
               credit = parse.ParseCredit(std::to_string(credit));
               credit = parse.FillCredit(credit);
-              this->transactionCode = "06_" + userAdd.username + "_" +
-                                      userAdd.type + "_" + credit;
+              this->transactionCode = "06_" + UserAdd.Username + "_" +
+                                      UserAdd.type + "_" + credit;
               this->valid = true;
               return;
             }
@@ -190,11 +190,11 @@ void Transaction::CreateAddCreditTransaction(){
           }
 
         }
-        //No other add credits for current user found
+        //No other add credits for current User found
         credit = parse.ParseCredit(std::to_string(credit));
         credit = parse.FillCredit(credit);
-        this->transactionCode = "06_" + userAdd.username + "_" +
-                                userAdd.type + "_" + credit;
+        this->transactionCode = "06_" + UserAdd.Username + "_" +
+                                UserAdd.type + "_" + credit;
         this->valid = true;
       }
       else{
@@ -203,25 +203,25 @@ void Transaction::CreateAddCreditTransaction(){
       }
     }
   }
-  //Standard user attempts to add credit.
+  //Standard User attempts to add credit.
   else{
     std::cout << "Credit: ";
     std::cin  >>  credit;
 
     if (credit <= 1000.00){
-      //Check to see if there are other pending transactions for this user
+      //Check to see if there are other pending transactions for this User
       std::string testString;
       float testCredit;
       for (auto i : dailyTrans){
         testString = i.substr(0,21);
         testCredit = std::strtof(i.substr(21,30).c_str(), 0);
         //06_UUUUUUUUUUUUUUU_TT_
-        if (testString == ("06_" + this->currentUser.username + "_" + this->currentUser.type + "_")){
+        if (testString == ("06_" + this->currentUser.Username + "_" + this->currentUser.type + "_")){
           //Check to see new added credit and pending isn't above 1000
           if ((testCredit + credit) <= 1000.00){
             credit = parse.ParseCredit(std::to_string(credit));
             credit = parse.FillCredit(credit);
-            this->transactionCode = "06_" + this->currentUser.username + "_" +
+            this->transactionCode = "06_" + this->currentUser.Username + "_" +
                                     this->currentUser.type + "_" + credit;
             this->valid = true;
             return;
@@ -234,10 +234,10 @@ void Transaction::CreateAddCreditTransaction(){
         }
 
       }
-      //No other add credits for current user found
+      //No other add credits for current User found
       credit = parse.ParseCredit(std::to_string(credit));
       credit = parse.FillCredit(credit);
-      this->transactionCode = "06_" + this->currentUser.username + "_" +
+      this->transactionCode = "06_" + this->currentUser.Username + "_" +
                               this->currentUser.type + "_" + credit;
       this->valid = true;
     }
@@ -249,9 +249,9 @@ void Transaction::CreateAddCreditTransaction(){
 }
 
 void Transaction::CreateCreateTransaction(){
-  std::string username, type, credit;
+  std::string Username, type, credit;
   std::cout << "Username: ";
-	std::cin >> username;
+	std::cin >> Username;
 
 	std::cout << "Account Type: ";
 	std::cin >> type;
@@ -260,9 +260,9 @@ void Transaction::CreateCreateTransaction(){
 	std::cin >> credit;
   //Constraints
   /*
-  • privileged transaction - only accepted when logged in as admin user
-  • new user name is limited to at most 15 characters
-  • new user names must be different from all other current users
+  • privileged transaction - only accepted when logged in as admin User
+  • new User name is limited to at most 15 characters
+  • new User names must be different from all other current Users
   • maximum credit can be 999,999
   */
   // Generate transaction code
@@ -272,7 +272,7 @@ void Transaction::CreateCreateTransaction(){
 
 void Transaction::CreateRefundTransaction(){
   std::string buyer, seller, credit;
-  //Check if user is admin
+  //Check if User is admin
 
 	std::cout << "Buyer Name: ";
 	std::cin >> buyer;
@@ -282,7 +282,7 @@ void Transaction::CreateRefundTransaction(){
 
   //Constraints
   /*
-  • Buyer and seller both must be current users
+  • Buyer and seller both must be current Users
   */
 
 	std::cout << "Credit: ";
@@ -292,18 +292,18 @@ void Transaction::CreateRefundTransaction(){
 }
 
 void Transaction::CreateDeleteTransaction(){
-    std::string username;
+    std::string Username;
     std::cout << "Username: " << std::endl;
-    std::cin >> username;
+    std::cin >> Username;
 
     //Delete::CancelSales();
     //Delete::RemoveUser();
 
     //Constraints
     /*
-     • privileged transaction - only accepted when logged in as admin user
-     • username must be the name of an existing user but not the name of the current user
-     • no further transactions should be accepted on a deleted user’s available inventory of items for sale.
+     • privileged transaction - only accepted when logged in as admin User
+     • Username must be the name of an existing User but not the name of the current User
+     • no further transactions should be accepted on a deleted User’s available inventory of items for sale.
      */
-    std::cout << "Account " << username  << " Deleted." << std::endl;
+    std::cout << "Account " << Username  << " Deleted." << std::endl;
 }

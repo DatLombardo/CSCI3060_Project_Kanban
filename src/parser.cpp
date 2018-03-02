@@ -14,7 +14,7 @@ Parser::Parser() {
 
 	//Daily transaction File
 	Parser::ReadDailyTrans("data/Daily Transactions.txt");
-	//Current user accounts
+	//Current User accounts
 	Parser::ReadCurrentUsers("../data/Current User Acocunts.txt");
 	//Availiable items file
 	Parser::ReadAvailItems("../data/Availiable Items.txt");
@@ -27,28 +27,42 @@ Reads the daily transaction file into dedicated vector.
 @params: fileName, passed file to be read.
 @return: None
 */
-void Parser::ReadDailyTrans(std::string fileName) {
-    std::ifstream fileReader(fileName);
-		std::string currentLine;
-		//Testing the file open.
-    if(!fileReader) {
-        std::cout<<"Error opening output file"<< std::endl;
-    }
-		//Read file line by line
-    while (std::getline(fileReader, currentLine)){
-        this->dailyTrans.push_back(currentLine);
-    }
+// void Parser::ReadDailyTrans(std::string fileName) {
+//     std::ifstream fileReader(fileName);
+// 		std::string currentLine;
+// 		//Testing the file open.
+//     if(!fileReader) {
+//         std::cout<<"Error opening output file"<< std::endl;
+//     }
+// 		//Read file line by line
+//     while (std::getline(fileReader, currentLine)){
+//         this->dailyTrans.push_back(currentLine);
+//     }
 
-		fileReader.close();
+// 		fileReader.close();
+// }
+
+std::vector<std::string> split(const std::string& s, char delimiter)
+{
+   std::vector<std::string> tokens;
+   std::string token;
+   std::istringstream tokenStream(s);
+   while (std::getline(tokenStream, token, delimiter))
+   {
+      tokens.push_back(token);
+   }
+   return tokens;
 }
 
 /*
 Parser - ReadCurrentUsers
-Reads the current user accounts file into dedicated vector.
+Reads the current User accounts file into dedicated vector.
 @params: fileName, passed file to be read.
 @return: None
 */
 void Parser::ReadCurrentUsers(std::string fileName) {
+	std::map<std::string, User> users;
+
     std::ifstream fileReader(fileName);
 		std::string currentLine;
 		//Testing the file open.
@@ -57,10 +71,18 @@ void Parser::ReadCurrentUsers(std::string fileName) {
     }
 		//Read file line by line
     while (std::getline(fileReader, currentLine)){
-        this->currentUsers.push_back(currentLine);
+		std::string username = currentLine.substr(0, 15);
+		std::string type = currentLine.substr(16, 2);
+		std::string credits = currentLine.substr(19, 7);
+		std::string creditsDec = currentLine.substr(26, 2);
+
+		User user = User(username, type, stof(credits) + stof(creditsDec) /100);
+		users[username] = user;
     }
 
-		fileReader.close();
+	
+
+	fileReader.close();
 }
 
 /*
@@ -70,6 +92,8 @@ Reads the availiable items file into dedicated vector.
 @return: None
 */
 void Parser::ReadAvailItems(std::string fileName) {
+    std::map<std::string, User> items;
+
     std::ifstream fileReader(fileName);
 		std::string currentLine;
 		//Testing the file open.
@@ -77,139 +101,19 @@ void Parser::ReadAvailItems(std::string fileName) {
         std::cout<<"Error opening output file"<< std::endl;
     }
 		//Read file line by line
-    while (std::getline(fileReader, currentLine)){
-        this->availItems.push_back(currentLine);
+    while (std::getline(fileReader, currentLine)) {
+		std::string itemname = currentLine.substr(0, 25);
+		std::string seller = currentLine.substr(26, 15);
+		std::string topBidUser = currentLine.substr(42, 15);
+		std::string daysToExpiry = currentLine.substr(57, 3);
+		std::string credits = currentLine.substr(61, 4);
+		std::string creditsDec = currentLine.substr(65, 2);
+
+		item item = Item(itemname, seller, topBidUser, daysToExpiry, stof(credits) + stof(creditsDec) / 100);
+		items[itemname] = user;
     }
 
-		fileReader.close();
-}
+	
 
-/*
-Parser - GetDailyTrans
-Return the vector of elements in the daily transaction file.
-@params: none
-@return: String value of 'username' + remaining filled space
-*/
-std::vector<std::string> Parser::GetDailyTrans() {
-	return this->dailyTrans;
-}
-
-/*
-Parser - GetDailyTrans
-Return the vector of elements in the current user accounts file.
-@params: none
-@return: String value of 'username' + remaining filled space
-*/
-std::vector<std::string> Parser::GetCurrentUsers() {
-	return this->currentUsers;
-}
-
-/*
-Parser - GetDailyTrans
-Return the vector of elements in the availiable items file.
-@params: none
-@return: String value of 'username' + remaining filled space
-*/
-std::vector<std::string> Parser::GetAvailItems() {
-	return this->availItems;
-}
-
-/*
-Parser - FillUsername
-Parse username inputted by user to meet system's username and formatting requirements
-Maximum username length = 15
-@params: username
-@return: String value of 'username' + remaining filled space
-*/
-std::string Parser::FillUsername(std::string username) {
-	int nameLength = username.length();
-	std::string newUser;
-	//username is less than required length, fill with empty spaces.
-	if(nameLength < 15){
-		newUser = username + (" " * (15 - nameLength));
-		return newUser;
-	} else{
-		return username;
-	}
-}
-
-/*
-Parser - FillCredit
-Parse credit inputted by user to meet system's credit formatting requirements
-Maximum credit length = 9
-@params: credit
-@return: String value of remaining 0's + 'credit'
-*/
-std::string Parser::FillCredit(std::string credit) {
-	int creditLength = username.length();
-	std::string newCredit;
-	//username is less than required length, fill with empty spaces.
-	if(creditLength < 9){
-		newCredit = ((9 - creditLength) * "0") + credit;
-		return newCredit;
-	} else{
-		return credit;
-	}
-}
-
-/*
-Parser - FillItemName
-Parse credit inputted by user to meet system's item name formatting requirements
-Maximum item name length = 25
-@params: itemName
-@return: String value of 'itemName' + remaining filled space
-*/
-std::string Parser::FillItemName(std::string itemName) {
-	int itemLength = itemName.length();
-	std::string newItemName;
-	//username is less than required length, fill with empty spaces.
-	if(itemLength < 25){
-		newItemName = itemName + (" " * (25 - itemLength)) ;
-		return newItemName;
-	} else{
-		return itemName;
-	}
-}
-
-/*
-Parser - FillNumOfDays
-Parse number of days inputted by user to meet system's numDays formatting requirements
-Maximum nubmer of days length = 3
-@params: numDays
-@return: String value of remaining 0's + 'numDays'
-*/
-std::string Parser::FillNumOfDays(std::string numDays) {
-	int daysLength = numDays.length();
-	std::string newNumDays;
-	//username is less than required length, fill with empty spaces.
-	if(daysLength < 3){
-		newNumDays = ((3 - daysLength) * "0") + numDays;
-		return newNumDays;
-	} else{
-		return numDays;
-	}
-}
-
-/*
-Parser - FillBid
-Parse bid inputted by user to meet system's bid formatting requirements
-Maximum bid length = 6
-@params: bid
-@return: String value of remaining 0's + 'bid'
-*/
-std::string Parser::FillBid(std::string bid) {
-	int bidLength = bid.length();
-	std::string newBid;
-	//username is less than required length, fill with empty spaces.
-	if(bidLength < 6){
-		newBid = ((6 - bidLength) * "0") + bid;
-		return newBid;
-	} else{
-		return bid;
-	}
-}
-
-std::string Parser::ParseCredit(std::string credit){
-	credit.erase(std::remove(credit.begin(), credit.end(), '.'), credit.end());
-	return credit;
+	fileReader.close();
 }

@@ -3,15 +3,16 @@ Kanban
 User.cpp
 */
 #include <iostream>
-#include "user.hpp"
+#include "User.hpp"
+#pragma once
 /*
 User - User
 General constructor for User class
-@params: newUser - formatting from current user accounts file.
+@params: newUser - formatting from current User accounts file.
 @return: none
 */
-User::User(std::string newUser) {
-	this->username = newUser.substr(0,14);
-	this->type = newUser.substr(16,17);
-	this->credit = newUser.substr(19,27);
+User::User(std::string username, std::string userType, float credits) {
+	this->userName = username;
+	this->userType = userType;
+	this->credits = credits;
 }
