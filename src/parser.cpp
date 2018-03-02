@@ -60,7 +60,7 @@ Reads the current User accounts file into dedicated vector.
 @params: fileName, passed file to be read.
 @return: None
 */
-void Parser::ReadCurrentUsers(std::string fileName) {
+std::map<std::string, User> Parser::ReadCurrentUsers(std::string fileName) {
 	std::map<std::string, User> users;
 
     std::ifstream fileReader(fileName);
@@ -91,7 +91,7 @@ Reads the availiable items file into dedicated vector.
 @params: fileName, passed file to be read.
 @return: None
 */
-void Parser::ReadAvailItems(std::string fileName) {
+std::map<std::string, Item> Parser::ReadAvailItems(std::string fileName) {
     std::map<std::string, User> items;
 
     std::ifstream fileReader(fileName);
@@ -113,7 +113,7 @@ void Parser::ReadAvailItems(std::string fileName) {
 		items[itemname] = user;
     }
 
-	
+	return items;
 
 	fileReader.close();
 }

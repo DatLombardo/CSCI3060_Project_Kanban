@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <boost/algorithm/string.hpp>
 #include "User.cpp"
 #include "item.cpp"
 #include "parser.cpp"
