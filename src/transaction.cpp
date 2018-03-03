@@ -200,7 +200,7 @@ void Transaction::CreateAdvertiseTransaction(){
                     this->valid = false;
                     }
                 } else{
-                    std::cout << "Error: Items cannot be up for over 100 days" << std::endl;
+                    std::cout << "Error: Item cannot be up for over 100 days" << std::endl;
                     this->valid = false;
                 }
                 } else{
@@ -234,7 +234,6 @@ void Transaction::CreateAdvertiseTransaction(){
 void Transaction::CreateAddCreditTransaction(){
   std::string username; 
   float credit;
-  User userAdd;
   std::cout << "Username: ";
   std::cin >>  username;
   credit = GetCreditInput();
@@ -255,6 +254,7 @@ void Transaction::CreateAddCreditTransaction(){
         this->valid = false;
       }else{
         //Create valid transaction here
+        std::cout << "Credit of " << credit << " added to " << username << std::endl;
         this->targetUser = this->userList[username];
         this->credit = credit;
         this->valid = true;
@@ -279,6 +279,7 @@ void Transaction::CreateAddCreditTransaction(){
         this->valid = false;
       } else{
         //Create valid transaction here
+        std::cout << "Credit of " << credit << " added to " << username << std::endl;
         this->targetUser = this->userList[username];
         this->credit = credit;
         this->valid = true;
@@ -406,24 +407,28 @@ void Transaction::CreateDeleteTransaction(){
 
   //Checks that user is admin
   if (this->currentUser.type == "AA"){
-    //Checks that user is not deleting itself
-    if (this->currentUser.username == username){
-      //Checks that user to be deleted exists
-      if (this->userList.count(username) > 0){
-        //Designate deleted user here
-        this->targetUser = this->userList[username];
-        std::cout << username  << " deleted by " << this->currentUser.username << "." << std::endl;
-        this->valid = true;
-      } else{
-        std::cout << "ERROR: User does not exist." << std::endl;
+      if (this->userList[username].type != "AA"){
+        //Checks that user is not deleting itself
+        if (this->currentUser.username == username){
+        //Checks that user to be deleted exists
+        if (this->userList.count(username) > 0){
+            //Designate deleted user here
+            this->targetUser = this->userList[username];
+            std::cout << username  << " deleted by " << this->currentUser.username << "." << std::endl;
+            this->valid = true;
+        } else{
+            std::cout << "ERROR: "<< username <<" does not exist." << std::endl;
+            this->valid = false;
+        }
+
+        } else{
+        std::cout << "ERROR: User cannot delete itself." << std::endl;
         this->valid = false;
+        }
+      } else{
+          std::cout << "ERROR: Admins cannot delete other admins" << std::endl;
+          this->valid = false;
       }
-
-    } else{
-      std::cout << "ERROR: User cannot delete itself." << std::endl;
-      this->valid = false;
-    }
-
   } else{
     std::cout << "ERROR: Standard users cannot delete other standard users." << std::endl;
     this->valid = false;
