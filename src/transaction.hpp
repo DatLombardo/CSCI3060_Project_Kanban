@@ -1,12 +1,13 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
 #include <map>
 #include <set>
 #include <boost/algorithm/string.hpp>
-#include "User.cpp"
-#include "item.cpp"
-#include "parser.cpp"
+#include "user.hpp"
+#include "item.hpp"
+#include "parser.hpp"
 
 class Transaction {
   public:
@@ -24,7 +25,7 @@ class Transaction {
       void CreateRefundTransaction();
       void CreateDeleteTransaction();
       float GetCreditInput();
-  private:
+//   private:
       User currentUser;
       User targetUser;
       User buyer;

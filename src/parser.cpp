@@ -12,13 +12,6 @@ General Parser constructor
 */
 Parser::Parser() {
 
-	//Daily transaction File
-	Parser::ReadDailyTrans("data/Daily Transactions.txt");
-	//Current User accounts
-	Parser::ReadCurrentUsers("../data/Current User Acocunts.txt");
-	//Availiable items file
-	Parser::ReadAvailItems("../data/Availiable Items.txt");
-
 }
 
 /*
@@ -63,26 +56,34 @@ Reads the current User accounts file into dedicated vector.
 std::map<std::string, User> Parser::ReadCurrentUsers(std::string fileName) {
 	std::map<std::string, User> users;
 
-    std::ifstream fileReader(fileName);
+    //std::ifstream fileReader(fileName);
+	std::ifstream fileReader;
+	fileReader.open(fileName);
 		std::string currentLine;
 		//Testing the file open.
-    if(!fileReader) {
-        std::cout<<"Error opening output file"<< std::endl;
-    }
-		//Read file line by line
-    while (std::getline(fileReader, currentLine)){
-		std::string username = currentLine.substr(0, 15);
-		std::string type = currentLine.substr(16, 2);
-		std::string credits = currentLine.substr(19, 7);
-		std::string creditsDec = currentLine.substr(26, 2);
+    if(fileReader.is_open()) {
+			//Read file line by line
+		while (std::getline(fileReader, currentLine)){
+			std::string username = currentLine.substr(0, 15);
+			std::string type = currentLine.substr(16, 2);
+			std::string credits = currentLine.substr(19, 9);
+			//std::cout << credits << std::endl << creditsDec << std::endl;
+			
+			boost::trim(username);
+			// std::cout << finalVal << std::endl;
 
-		User user = User(username, type, stof(credits) + stof(creditsDec) /100);
-		users[username] = user;
-    }
+			User user = User(username, type, stof(credits));
+			users[username] = user;
+		}
+
+	} else
+		std::cout<<"Error opening users file"<< std::endl;
 
 	
 
 	fileReader.close();
+
+	return users;
 }
 
 /*
@@ -92,28 +93,35 @@ Reads the availiable items file into dedicated vector.
 @return: None
 */
 std::map<std::string, Item> Parser::ReadAvailItems(std::string fileName) {
-    std::map<std::string, User> items;
+    std::map<std::string, Item> items;
 
     std::ifstream fileReader(fileName);
 		std::string currentLine;
 		//Testing the file open.
     if(!fileReader) {
-        std::cout<<"Error opening output file"<< std::endl;
+        std::cout<<"Error opening item file"<< std::endl;
     }
 		//Read file line by line
     while (std::getline(fileReader, currentLine)) {
 		std::string itemname = currentLine.substr(0, 25);
 		std::string seller = currentLine.substr(26, 15);
 		std::string topBidUser = currentLine.substr(42, 15);
-		std::string daysToExpiry = currentLine.substr(57, 3);
-		std::string credits = currentLine.substr(61, 4);
-		std::string creditsDec = currentLine.substr(65, 2);
+		std::string daysToExpiry = currentLine.substr(58, 3);
+		std::string credits = currentLine.substr(62, 7);
 
-		item item = Item(itemname, seller, topBidUser, daysToExpiry, stof(credits) + stof(creditsDec) / 100);
-		items[itemname] = user;
+		boost::trim(itemname);
+		boost::trim(seller);
+		boost::trim(topBidUser);
+
+		// std::cout << itemname << seller << topBidUser << daysToExpiry << credits << creditsDec << std::endl;
+
+		Item item = Item(itemname, seller, topBidUser, stoi(daysToExpiry), stof(credits));
+		items[itemname] = item;
     }
+
+	fileReader.close();
 
 	return items;
 
-	fileReader.close();
+	
 }

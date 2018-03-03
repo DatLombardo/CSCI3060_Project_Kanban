@@ -7,45 +7,55 @@
 
 #include <iostream>
 #include <vector>
-#include "transaction.cpp"
+#include "transaction.hpp"
+#include "parser.hpp"
+#include "fileout.hpp"
+#include "item.hpp"
+#include "user.hpp"
 
-void main() {
+int main() {
     std::cout << "Welcome to TerribleAuction\nBy: Kanban Group™\n" << std::endl;
 
     bool loggedIn = false;
-    User currentUser = null;
+    User* currentUser = nullptr;
 
     std::vector<Transaction> transactions;
 
+    Parser p = Parser();
+    std::map<std::string, User> userList = p.ReadCurrentUsers("output/data/userlist.txt");
+    std::map<std::string, Item> itemList = p.ReadAvailItems("output/data/itemlist.txt");
+
     while (true) {
-        std::string UserInput;
+        std::string userInput;
 
         std::cout << "Please enter a transaction code: ";
-        std::cin >> UserInput;
+        std::cin >> userInput;
 
-        if (UserInput == "logout" && loggedIn) {
+        if (userInput == "logout" && loggedIn) {
             // User has chose to logout, write transactions to appropriate file(s)
 
-            fileout f = new Fileout();
+            Fileout f = Fileout();
 
-            tranasctions.append(Transaction(UserInput));
-            f.writetransactions(transactions);
+            transactions.push_back(Transaction(userInput, *currentUser, userList, itemList));
+            f.writeTransactions(transactions);
+
+            return 1;
 
         } else if (loggedIn) {
-            Transaction t = Transaction(UserInput, currentUser); // transaction data input lookp
+            Transaction t = Transaction(userInput, *currentUser, userList, itemList); // transaction data input lookp
 
             if (t.valid)
-                transactions.append(t);
+                transactions.push_back(t);
             else
                 continue; // transaction failed; class will print error
         } else {
-            if (UserInput == "login") {
-                Transaction t = Transaction(UserInput);
+            if (userInput == "login") {
+                Transaction t = Transaction(userInput, userList);
 
                 loggedIn = true;
-                User = t.currentUser;
+                currentUser = &t.currentUser;
 
-                transactions.append(t);
+                transactions.push_back(t);
             } else {
                 std::cout << "Error: please login before attempting other transaction" << std::endl;
             }
@@ -53,4 +63,5 @@ void main() {
         }
     }
 
+    return 0;
 }

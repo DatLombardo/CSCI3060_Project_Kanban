@@ -1,7 +1,6 @@
 #include "transaction.hpp"
 
-Transaction::Transaction(std::string input, std::map<std::string, User> &userList,
-      std::map<std::string, Item> &itemList) {
+Transaction::Transaction(std::string input, std::map<std::string, User> &userList) {
     this->userList = userList;
     this->itemList = itemList;
     if (input == "login"){
@@ -12,49 +11,54 @@ Transaction::Transaction(std::string input, std::map<std::string, User> &userLis
     }
 }
 
-Transaction::Transaction(std::string input, user currentUser) {
+Transaction::Transaction(std::string input, User currentUser,
+            std::map<std::string, User> &userList, std::map<std::string, Item> &itemList) {
     // check and see if transaction input is valid
 
     // if it is, call respective transaction function to gather input
 
-    if (input == "logout")
+    this->currentUser = currentUser;
+    this->userList = userList;
+    this->itemList = itemList;
+
+    if (input == "logout"){
         this->transactionCode = "00";
         CreateLogoutTransaction();
-
-    else if (input == "bid")
+    }
+    else if (input == "bid"){
         this->transactionCode = "04";
         CreateBidTransaction();
-
-    else if (input == "advertise")
+    }
+    else if (input == "advertise"){
         this->transactionCode = "03";
         CreateAdvertiseTransaction();
-
-    else if (input == "addcredit")
+    }
+    else if (input == "addcredit"){
         this->transactionCode = "06";
         CreateAddCreditTransaction();
-
-    else if (input == "create")
+    }
+    else if (input == "create"){
         this->transactionCode = "01";
         CreateCreateTransaction();
-
-    else if (input == "refund")
+    }
+    else if (input == "refund"){
         this->transactionCode = "05";
         CreateRefundTransaction();
-
-    else if (input == "delete")
+    }
+    else if (input == "delete"){
         this->transactionCode = "02";
         CreateDeleteTransaction();
-
-    else
+    }
+    else{
         std::cout << "\t\t\tnot a transaction l0ser" << std::endl;
-
+    }
 }
 
 //Transaction Code 10
 void Transaction::CreateLoginTransaction(){
   std::string username;
   std::cout << "Username: ";
-	std::cin >>  username;
+    std::cin >>  username;
   
   if (username.length() > 15){
     std::cout << "ERROR: Username above limit (15 characters)" << std::endl;
@@ -72,6 +76,8 @@ void Transaction::CreateLoginTransaction(){
       this->valid = true;
     }
   }
+
+  return;
 }
 
 //Transaction Code 00
@@ -79,27 +85,70 @@ void Transaction::CreateLogoutTransaction(){
   std::cout << "Logging out." << std::endl;
   this->valid = true;
   //Create valid transaction here
+
+  return;
 }
 
 
 void Transaction::CreateBidTransaction(){
-  std::string itemName, numDays, sellerName, bidAmount;
+  std::string itemName, numDays, sellerName;
+  float bidAmount;
   std::cout << "Item Name: ";
 	std::cin >>  itemName;
 
-  std::cout
   std::cout << "Number of Days Remaining: ";
   std::cin >> numDays;
 
 	std::cout << "Seller Name: ";
 	std::cin  >>  sellerName;
 
-  //Check if item & seller name's exists
+  if(this->currentUser.username != sellerName){
+    if (this->currentUser.type != "SS"){
+      //Check if item & seller name's exists
+      if(this->itemList.count(itemName) > 0){
+        if(this->userList.count(sellerName) > 0){
+          float currentBid = this->itemList[itemName].currentBid;
+          std::cout << "Highest bid: " << currentBid << std::endl; 
 
+          std::cout << "Bid Amount: ";
+          bidAmount = GetCreditInput();
+
+          if (this->currentUser.type == "AA" && bidAmount > currentBid){
+            std::cout << "Bid made on " << itemName << std::endl;
+            this->valid = true;
+          } else if (this->currentUser.type == "AA" && bidAmount <= currentBid){
+            std::cout << "Error: Bid is not greater than current highest bid." <<std::endl;
+            this->valid = false;
+          } else{
+            float minBid = currentBid * 1.05;
+            if (bidAmount > minBid){
+              std::cout << "Bid made on " << itemName << std::endl;
+              this->valid = true;
+            } else{
+              std::cout << "Error: Bid is not 5%% greater than current highest bid." << std::endl;
+              this->valid = false;
+            }
+          }
+        } else{
+          std::cout << "Error: Seller does not exist" << std::endl;
+          this->valid = false;
+        }
+      } else{
+        std::cout << "Error: Item name does not exist" << std::endl;
+        this->valid = false;
+      }
+    } else{
+      std::cout << "Error: " << this->currentUser.username << " does not have privilege to buy." << std::endl;
+      this->valid = false;
+    }
+  } else{
+    std::cout << "Error: Can't bid on your own items." << std::endl;
+    this->valid = false;
+
+  }
   //Get Minimum bid of item and display the minimum bid
 
-  std::cout << "Bid Amount: ";
-  std::cin >>  bidAmount;
+  
 
   // Constraints
   /*
@@ -113,11 +162,15 @@ void Transaction::CreateBidTransaction(){
 
   //Generate transaction code
 
-  std::cout << "Bid placed on " <<  itemName << "!" << std::endl;
+//   std::cout << "Bid placed on " <<  itemName << "!" << std::endl;
+
+  return;
 }
 
 void Transaction::CreateAdvertiseTransaction(){
-  std::string itemName, minBid, auctionLength;
+  std::string itemName;
+  int auctionLength;
+  float minBid;
   std::cout << "Item Name: ";
 	std::cin >>  itemName;
 
@@ -129,6 +182,34 @@ void Transaction::CreateAdvertiseTransaction(){
 	std::cout << "Auction Length (Days): ";
 	std::cin >>  auctionLength;
 
+  if (this->currentUser.type != "BS"){
+    if (itemName.length() <= 25){
+      if (minBid < 1000.00){
+        if (auctionLength <= 100){
+          if (this->itemList.count(itemName) == 0){
+            this->item = Item(itemName, this->currentUser.username, "", auctionLength, minBid);
+            std::cout << itemName << " is up for auction!" << std::endl;
+            this->valid = true;
+          } else{
+            std::cout << "Error: " << itemName << " is already up for auction." << std::endl;
+            this->valid = false;
+          }
+        } else{
+          std::cout << "Error: Items cannot be up for over 100 days" << std::endl;
+          this->valid = false;
+        }
+      } else{
+        std::cout << "Error: Cannot put items up for over 999.99 credits." << std::endl;
+        this->valid = false;
+      }
+    } else{
+      std::cout << "Error: Item name cannot exceed 25 characters." << std::endl;
+      this->valid = false;
+    }
+  } else{
+    std::cout << "Error: Buy-standard user cannot put items up for auction." << std::endl;
+    this->valid = false;
+  }
   //Constraints
   /*
   • Semi-privileged transaction - only accepted when logged in any type of account except standard-buy.
@@ -140,22 +221,24 @@ void Transaction::CreateAdvertiseTransaction(){
 	// TODO: Error checking for all input
   //Generate transaction code
 
-	std::cout <<  itemName << " is up for auction!" << std::endl;
+	// std::cout <<  itemName << " is up for auction!" << std::endl;
+
+    return;
 }
 
 void Transaction::CreateAddCreditTransaction(){
-  std::string username
+  std::string username; 
   float credit;
   User userAdd;
   std::cout << "Username: ";
   std::cin >>  username;
+  credit = GetCreditInput();
 
   if (this->currentUser.type == "AA"){
     
     //Check if user exists
     if (this->userList.count(username) > 0){
-      credit = GetCreditInput();
-      newCredit = this->userList[username].credits + credit;
+      float newCredit = this->userList[username].credits + credit;
 
       //Check if new credit amount exceeds limit
       if (newCredit > 999999.00){
@@ -180,7 +263,7 @@ void Transaction::CreateAddCreditTransaction(){
   //Standard user attempts to add credit.
   else{
     credit = GetCreditInput();
-
+    float newCredit = this->userList[username].credits + credit;
     //Check if new credit amount exceeds limit
       if (newCredit > 999999.00){
         std::cout << "ERROR: New credit amount exceeds limit." << std::endl;
@@ -197,6 +280,8 @@ void Transaction::CreateAddCreditTransaction(){
       }
 
   }
+
+  return;
 }
 
 void Transaction::CreateCreateTransaction(){
@@ -211,7 +296,7 @@ void Transaction::CreateCreateTransaction(){
   if (this->currentUser.type == "AA"){
     
 
-    if (strlen(username) > 15){
+    if (username.length() > 15){
     //Rejects overly long username
       std::cout << "ERROR: Username length cannot exceed 15 characters." << std::endl;
       this->valid = false;
@@ -234,6 +319,7 @@ void Transaction::CreateCreateTransaction(){
           this->valid = false;
         }
         
+        }
     }
   } else{
     std::cout << "ERROR: Current user is not an admin." << std::endl;
@@ -248,6 +334,8 @@ void Transaction::CreateCreateTransaction(){
   */
   // Generate transaction code
 
+
+    return;
 }
 
 void Transaction::CreateRefundTransaction(){
@@ -296,6 +384,7 @@ void Transaction::CreateRefundTransaction(){
     this->valid = false;
   }
   
+  return;
 
   //Constraints
   /*
@@ -313,9 +402,9 @@ void Transaction::CreateDeleteTransaction(){
   //Checks that user is admin
   if (this->currentUser.type == "AA"){
     //Checks that user is not deleting itself
-    if (strcmp(this.currentUser.name, username) == 0){
+    if (this->currentUser.username == username){
       //Checks that user to be deleted exists
-      if (this->userList.count(username > 0)){
+      if (this->userList.count(username) > 0){
         //Designate deleted user here
         this->targetUser = this->userList[username];
         std::cout << "Account " << username  << " Deleted." << std::endl;
@@ -334,6 +423,8 @@ void Transaction::CreateDeleteTransaction(){
     std::cout << "ERROR: Current user is not an admin." << std::endl;
     this->valid = false;
   }
+
+  return;
     
     //Delete::CancelSales();
     //Delete::RemoveUser();
@@ -356,7 +447,7 @@ float Transaction::GetCreditInput(){
     std::cin >> credit;
 
     if (std::cin.fail()){
-      std::cout << "Please enter a number." << endl;
+      std::cout << "Please enter a number." <<std::endl;
       std::cin.clear();
       std::cin.ignore();
     } else {

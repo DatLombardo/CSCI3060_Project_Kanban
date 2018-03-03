@@ -1,7 +1,7 @@
 CXX=clang++ 
 VER=-std=c++11
 EXE=output/output.exe
-OBJS=src/main.o src/fileout.o src/transaction.o
+OBJS=src/main.o src/fileout.o src/transaction.o src/item.o src/user.o src/parser.o
 
 .cpp.o:
 	$(CC) $(VER) -c -o $@ $<

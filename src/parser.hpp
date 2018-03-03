@@ -2,12 +2,14 @@
 Kanban
 parser.hpp
 */
+#pragma once
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include "User.cpp"
+#include <fstream>
+#include "user.hpp"
+#include "item.hpp"
 
 class Parser {
 	private:
@@ -16,6 +18,6 @@ class Parser {
 		std::vector<std::string> availItems;
 	public:
 		Parser();
-		std::map<std::string, User> ReadCurrentUsers(std::string fileName));
-		std::map<std::string, Item> ReadAvailItems(std::string fileName));
+		std::map<std::string, User> ReadCurrentUsers(std::string fileName);
+		std::map<std::string, Item> ReadAvailItems(std::string fileName);
 };
