@@ -24,6 +24,7 @@ class Transaction {
       void CreateCreateTransaction();
       void CreateRefundTransaction();
       void CreateDeleteTransaction();
+      void CreateDisplayTransaction();
       float GetCreditInput();
 //   private:
       User currentUser;

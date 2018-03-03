@@ -48,6 +48,8 @@ Transaction::Transaction(std::string input, User currentUser,
     else if (input == "delete"){
         this->transactionCode = "02";
         CreateDeleteTransaction();
+    } else if (input == "display"){
+        CreateDisplayTransaction();
     }
     else{
         std::cout << "\t\t\tnot a transaction l0ser" << std::endl;
@@ -446,6 +448,18 @@ void Transaction::CreateDeleteTransaction(){
      • no further transactions should be accepted on a deleted user’s available inventory of items for sale.
      */
     
+}
+
+
+void Transaction::CreateDisplayTransaction(){
+    for (std::map<std::string, Item>::iterator it=itemList.begin(); it!=itemList.end(); ++it){
+        item = it->second;
+        std::cout << "Item: " << item.itemName << std::endl
+        << "\tSeller: " << item.seller << std::endl
+        << "\tCurrent Buyer: " << item.buyer << std::endl
+        << "\tDays Left: " << item.daysToExpiry << std::endl
+        << "\tCurrent Bid:" << item.currentBid << std::endl << std::endl;
+    }
 }
 
 float Transaction::GetCreditInput(){
