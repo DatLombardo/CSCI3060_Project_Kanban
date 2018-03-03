@@ -54,7 +54,7 @@ void refund(std::ofstream& out, Transaction transaction) {
         << seller
         << std::setw(0) << transaction.currentUser.type << " "
         << std::right << std::setw(7) << std::setfill('0')
-        << s;
+        << s << std::endl;
 
     return;
 }
