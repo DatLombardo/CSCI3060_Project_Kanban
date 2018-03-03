@@ -1,3 +1,8 @@
+/*
+Kanban
+transaction.hpp
+*/
+
 #pragma once
 #include <iostream>
 #include <string>
@@ -26,7 +31,6 @@ class Transaction {
       void CreateDeleteTransaction();
       void CreateDisplayTransaction();
       float GetCreditInput();
-//   private:
       User currentUser;
       User targetUser;
       User buyer;

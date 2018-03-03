@@ -1,3 +1,8 @@
+/*
+Kanban
+item.hpp
+*/
+
 #pragma once
 #include <string>
 
@@ -10,7 +15,6 @@ class Item {
     std::string getBuyer();
     std::string getDaysLeft();
     std::string getBid();
-  //private:
     std::string itemName;
     std::string seller;
     std::string buyer;

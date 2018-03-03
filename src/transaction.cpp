@@ -1,5 +1,20 @@
+/*
+Kanban
+transaction.cpp
+
+Transaction class, used for taking in desired user input and passing input
+to relevant request, sets global valid variable in transaction instance to
+true or false depending on correct / incorrect user input.
+*/
+
 #include "transaction.hpp"
 
+/*
+Transaction - Transaction
+General constructor for transaction instance when user is not logged in.
+@params: input transaction request, userList username list
+@return: Void
+*/
 Transaction::Transaction(std::string input, std::map<std::string, User> &userList) {
     this->userList = userList;
     this->itemList = itemList;
@@ -11,12 +26,19 @@ Transaction::Transaction(std::string input, std::map<std::string, User> &userLis
     }
 }
 
+/*
+Transaction - Transaction
+General constructor for transaction instance when user is logged in. Checks
+ to see if input is valid, if it is call CreateTransaction for input.
+@params: input transaction request, currentUser instance of existing login
+          userList username list, itemList item list
+@return: Void
+*/
 Transaction::Transaction(std::string input, User currentUser,
             std::map<std::string, User> &userList, std::map<std::string, Item> &itemList) {
+
     // check and see if transaction input is valid
-
     // if it is, call respective transaction function to gather input
-
     this->currentUser = currentUser;
     this->userList = userList;
     this->itemList = itemList;
@@ -56,12 +78,19 @@ Transaction::Transaction(std::string input, User currentUser,
     }
 }
 
-//Transaction Code 10
+/*
+Transaction - CreateLoginTransaction
+Function used for login input request, sets valid to T/F depending on Function
+  interation, stores all relevant input to currentUser instance for write.
+  Transaction Code: 10
+@params: None
+@return: Void
+*/
 void Transaction::CreateLoginTransaction(){
     std::string username;
     std::cout << "Username: ";
     std::cin >>  username;
-    
+
     if (username.length() > 15){
         std::cout << "ERROR: Username above limit (15 characters)" << std::endl;
         this->valid = false;
@@ -82,7 +111,14 @@ void Transaction::CreateLoginTransaction(){
     return;
 }
 
-//Transaction Code 00
+/*
+Transaction - CreateLogoutTransaction
+Function used for logout input request, closes transaction stream for current
+  login
+  Transaction Code: 00
+@params: None
+@return: Void
+*/
 void Transaction::CreateLogoutTransaction(){
   std::cout << "Logging out." << std::endl;
   this->valid = true;
@@ -91,7 +127,14 @@ void Transaction::CreateLogoutTransaction(){
   return;
 }
 
-
+/*
+Transaction - CreateBidTransaction
+Function used for bid input request, sets valid to T/F depending on Function
+  interation, stores all relevant input to seller and item instance for write.
+  Transaction Code: 04
+@params: None
+@return: Void
+*/
 void Transaction::CreateBidTransaction(){
   std::string itemName, numDays, sellerName;
   float bidAmount;
@@ -110,7 +153,7 @@ void Transaction::CreateBidTransaction(){
       if(this->itemList.count(itemName) > 0){
         if(this->userList.count(sellerName) > 0){
           float currentBid = this->itemList[itemName].currentBid;
-          std::cout << "Highest bid: " << currentBid << std::endl; 
+          std::cout << "Highest bid: " << currentBid << std::endl;
 
           std::cout << "Bid Amount: ";
           bidAmount = GetCreditInput();
@@ -153,27 +196,17 @@ void Transaction::CreateBidTransaction(){
     this->valid = false;
 
   }
-  //Get Minimum bid of item and display the minimum bid
-
-  
-
-  // Constraints
-  /*
-  • Semi-privileged transaction - only accepted when logged in any type of account except standard-sell.
-  • item name must be an existing item
-  • new bid must be greater than the previous highest bid
-  • new bid must be at least 5% higher than the previous highest bid (this restriction does not apply in privileged mode)
-  */
-
-  //Check if bid is more than 5% of current bid amount, unless user is admin.
-
-  //Generate transaction code
-
-//   std::cout << "Bid placed on " <<  itemName << "!" << std::endl;
-
   return;
 }
 
+/*
+Transaction - CreateAdvertiseTransaction
+Function used for advertise input request, sets valid to T/F depending on
+  Function interation, stores all relevant input to  item instance for write.
+  Transaction Code: 03
+@params: None
+@return: Void
+*/
 void Transaction::CreateAdvertiseTransaction(){
     std::string itemName;
     int auctionLength;
@@ -217,31 +250,27 @@ void Transaction::CreateAdvertiseTransaction(){
     std::cout << "Error: Buy-standard user cannot put items up for auction." << std::endl;
     this->valid = false;
     }
-  //Constraints
-  /*
-  • Semi-privileged transaction - only accepted when logged in any type of account except standard-buy.
-  • the maximum price for an item is 999.99
-  • the maximum length of an item name is 25 characters
-  • the maximum number of days to auction is 100
-  */
-
-	// TODO: Error checking for all input
-  //Generate transaction code
-
-	// std::cout <<  itemName << " is up for auction!" << std::endl;
-
     return;
 }
 
+/*
+Transaction - CreateAddCreditTransaction
+Function used for add credit input request, sets valid to T/F depending on
+  Function interation, stores all relevant input to currentUser and targetUser
+  instance for write.
+  Transaction Code: 06
+@params: None
+@return: Void
+*/
 void Transaction::CreateAddCreditTransaction(){
-  std::string username; 
+  std::string username;
   float credit;
   std::cout << "Username: ";
   std::cin >>  username;
   credit = GetCreditInput();
 
   if (this->currentUser.type == "AA"){
-    
+
     //Check if user exists
     if (this->userList.count(username) > 0){
       float newCredit = this->userList[username].credits + credit;
@@ -250,7 +279,7 @@ void Transaction::CreateAddCreditTransaction(){
       if (newCredit > 999999.00){
         std::cout << "ERROR: New credit amount exceeds limit." << std::endl;
         this->valid = false;
-      } else if (credit > 1000.00){ 
+      } else if (credit > 1000.00){
       //Check if user is adding more than 1000 credits
         std::cout << "ERROR: Cannot add more than 1000 credits in one session." << std::endl;
         this->valid = false;
@@ -275,7 +304,7 @@ void Transaction::CreateAddCreditTransaction(){
       if (newCredit > 999999.00){
         std::cout << "ERROR: New credit amount exceeds limit." << std::endl;
         this->valid = false;
-      } else if (credit > 1000.00){ 
+      } else if (credit > 1000.00){
         //Check if user is adding more than 1000 credits
         std::cout << "ERROR: Cannot add more than 1000 credits in one session." << std::endl;
         this->valid = false;
@@ -292,6 +321,15 @@ void Transaction::CreateAddCreditTransaction(){
   return;
 }
 
+/*
+Transaction - CreateCreateTransaction
+Function used for advertise input request, sets valid to T/F depending on
+  Function interation, stores all relevant input to currentUser instance for
+  write.
+  Transaction Code: 03
+@params: None
+@return: Void
+*/
 void Transaction::CreateCreateTransaction(){
   std::string username, type;
   float credit;
@@ -325,26 +363,25 @@ void Transaction::CreateCreateTransaction(){
             std::cout << "ERROR: Not a valid user type." << std::endl;
           this->valid = false;
         }
-        
+
         }
     }
   } else{
     std::cout << "ERROR: Standard user cannot use CREATE." << std::endl;
     this->valid = false;
   }
-  //Constraints
-  /*
-  • privileged transaction - only accepted when logged in as admin user
-  • new user name is limited to at most 15 characters
-  • new user names must be different from all other current users
-  • maximum credit can be 999,999
-  */
-  // Generate transaction code
-
-
-    return;
+  return;
 }
 
+/*
+Transaction - CreateRefundTransaction
+Function used for refund input request, sets valid to T/F depending on
+  Function interation, stores all relevant input to buyer and seller instance
+  for write.
+  Transaction Code: 05
+@params: None
+@return: Void
+*/
 void Transaction::CreateRefundTransaction(){
   std::string buyer, seller;
   float credit;
@@ -359,7 +396,7 @@ void Transaction::CreateRefundTransaction(){
 
     //Checks that buyer exists
     if (this->userList.find(buyer) != this->userList.end()){
-      
+
       //Checks that seller exists
       if (this->userList.find(seller) != this->userList.end()){
 
@@ -387,21 +424,21 @@ void Transaction::CreateRefundTransaction(){
     }
 
   } else{
-    std::cout << "ERROR: " << this->currentUser.username 
+    std::cout << "ERROR: " << this->currentUser.username
         << " does not have privilege to refund." << std::endl;
     this->valid = false;
   }
-  
   return;
-
-  //Constraints
-  /*
-  • Buyer and seller both must be current users
-  */
-
-	//Check if credit exists in seller's balance
 }
 
+/*
+Transaction - CreateDeleteTransaction
+Function used for delete input request, sets valid to T/F depending on
+  Function interation, stores all relevant input to targetUser instance for write.
+  Transaction Code: 02
+@params: None
+@return: Void
+*/
 void Transaction::CreateDeleteTransaction(){
   std::string username;
   std::cout << "Username: " << std::endl;
@@ -437,20 +474,15 @@ void Transaction::CreateDeleteTransaction(){
   }
 
   return;
-    
-    //Delete::CancelSales();
-    //Delete::RemoveUser();
 
-    //Constraints
-    /*
-     • privileged transaction - only accepted when logged in as admin user
-     • username must be the name of an existing user but not the name of the current user
-     • no further transactions should be accepted on a deleted user’s available inventory of items for sale.
-     */
-    
 }
 
-
+/*
+Transaction - CreateDisplayTransaction
+Function used for display input request, outputs item list
+@params: None
+@return: Void
+*/
 void Transaction::CreateDisplayTransaction(){
     for (std::map<std::string, Item>::iterator it=itemList.begin(); it!=itemList.end(); ++it){
         item = it->second;
@@ -462,6 +494,15 @@ void Transaction::CreateDisplayTransaction(){
     }
 }
 
+
+/*
+Transaction - GetCreditInput
+Function used for float input for credits, user must be prompted prior to
+  calling this function for 'what' the input required is for. Continuous input
+  until valid input given.
+@params: None
+@return: float
+*/
 float Transaction::GetCreditInput(){
   float credit;
   bool validFloat = false;
