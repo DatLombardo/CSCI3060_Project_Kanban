@@ -46,15 +46,14 @@ void refund(std::ofstream& out, Transaction transaction) {
     stream << std::fixed << std::setprecision(2) << transaction.credit;
     std::string s = stream.str();
 
-    boost::erase_all(s, ".");
+    // boost::erase_all(s, ".");
 
     out << transaction.transactionCode 
-        << " " << std::setfill(' ') << std::setw(16)
-        << username
+        << " " << std::left << std::setfill(' ') << std::setw(16) << std::endl
+        << buyer << std::setw(16)
         << seller
-        << buyer
         << std::setw(0) << transaction.currentUser.type << " "
-        << std::setw(4) << std::setfill('0')
+        << std::right << std::setw(7) << std::setfill('0')
         << s;
 
     return;
@@ -67,18 +66,17 @@ void advertise(std::ofstream& out, Transaction transaction) {
     stream << std::fixed << std::setprecision(2) << transaction.minBid;
     std::string s = stream.str();
 
-    boost::erase_all(s, ".");
+    // boost::erase_all(s, ".");
 
     out << transaction.transactionCode 
-        << " " << std::setfill(' ') << std::setw(26)
+        << " " << std::left << std::setfill(' ') << std::setw(26)
         << transaction.item.itemName
         << std::setfill(' ') << std::setw(16)
         << username
-        << std::setw(0) << transaction.currentUser.type << " "
         << std::setfill('0') << std::setw(3) << transaction.daysToExpiry
         << " "
-        << std::setw(4) << " "
-        << s;
+        << std::right << std::setw(7) << " "
+        << s << std::endl;
 
     return;
 }
@@ -92,25 +90,22 @@ void bid(std::ofstream& out, Transaction transaction) {
     stream << std::fixed << std::setprecision(2) << transaction.minBid;
     std::string s = stream.str();
 
-    boost::erase_all(s, ".");
+    // boost::erase_all(s, ".");
 
     out << transaction.transactionCode 
-        << " " << std::setfill(' ') << std::setw(26)
+        << " " << std::left << std::setfill(' ') << std::setw(26) 
         << transaction.item.itemName
         << std::setfill(' ') << std::setw(16)
-        << seller
+        << seller << std::setw(16)
         << username
-        << std::setw(0) << transaction.currentUser.type << " "
-        << std::setfill('0') << std::setw(3) << transaction.daysToExpiry
-        << " "
-        << std::setw(4) << " "
-        << s;
+        << std::right << std::setfill('0') << std::setw(7)
+        << s << std::endl;
 
     return;
 }
 
 void Fileout::writeTransactions(std::vector<Transaction> transactions) {
-    std::ofstream out("output.fout");
+    std::ofstream out("output.fout", std::ios_base::app);
 
     for (auto trans : transactions) {
         if (trans.transactionCode == "10" || trans.transactionCode == "00" ||

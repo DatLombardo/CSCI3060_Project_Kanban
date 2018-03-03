@@ -52,10 +52,12 @@ int main() {
             if (userInput == "login") {
                 Transaction t = Transaction(userInput, userList);
 
-                loggedIn = true;
-                currentUser = &t.currentUser;
+                if (t.valid == true){
+                    loggedIn = true;
+                    currentUser = &t.currentUser;
+                    transactions.push_back(t);
+                }
 
-                transactions.push_back(t);
             } else {
                 std::cout << "Error: please login before attempting other transaction" << std::endl;
             }
