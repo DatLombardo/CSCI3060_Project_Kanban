@@ -1,9 +1,0 @@
-username01     _FS_010000000
-admin01        _AA_090090000
-username02     _BS_010000000
-username03     _SS_010000000
-brokeuser01    _FS_000005000
-brokeuser02    _BS_000005000
-brokeuser03    _SS_000005000
-seller01       _FS_002000000
-END            _  _   

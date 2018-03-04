@@ -1,5 +1,0 @@
-itemspew01               _seller01       _username01     _002_001000
-itemspew02               _seller01       _admin01        _006_005000
-pentax                   _seller01       _username02     _012_030000
-kite surfing set         _seller01       _username01     _014_030000
-END                      _               _               _   _

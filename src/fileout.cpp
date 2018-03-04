@@ -23,14 +23,10 @@ Fileout::Fileout(){
 
 }
 
-/*
-typeOne
-First type of transaction write
-  format: XX_UUUUUUUUUUUUUUU_TT_CCCCCCCCC
-@params: out file outstream, transaction current transaction instance being
-  written.
-@return: Void
-*/
+Fileout::Fileout(std::string outDir) {
+    this->outDir = outDir;
+}
+
 void typeOne(std::ofstream& out, Transaction transaction) {
     std::string username = transaction.currentUser.username;
 
@@ -149,7 +145,10 @@ Function called in main to execute writing current pending transactions to the
 @return: Void
 */
 void Fileout::writeTransactions(std::vector<Transaction> transactions) {
-    std::ofstream out("output.fout", std::ios_base::app);
+    std::cout << outDir << std::endl;
+    std::ofstream out(outDir, std::ios_base::app);
+
+    if (!out.is_open()) std::cout << "Error opening output file." << std::endl;
 
     //Iterate through each of the transactions and pass transaction code to
     // relevant code parser.
