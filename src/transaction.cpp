@@ -74,7 +74,7 @@ Transaction::Transaction(std::string input, User currentUser,
         CreateDisplayTransaction();
     }
     else{
-        std::cout << "\t\t\tnot a transaction l0ser" << std::endl;
+        std::cout << "Please input a valid transaction." << std::endl;
     }
 }
 
@@ -265,11 +265,15 @@ Function used for add credit input request, sets valid to T/F depending on
 void Transaction::CreateAddCreditTransaction(){
   std::string username;
   float credit;
-  std::cout << "Username: ";
-  std::cin >>  username;
-  credit = GetCreditInput();
+  
+  
 
   if (this->currentUser.type == "AA"){
+
+    std::cout << "Username: ";
+    std::cin >>  username;
+
+    credit = GetCreditInput();
 
     //Check if user exists
     if (this->userList.count(username) > 0){
@@ -286,7 +290,7 @@ void Transaction::CreateAddCreditTransaction(){
       }else{
         //Create valid transaction here
         std::cout << "Credit of " << credit << " added to " << username << std::endl;
-        this->targetUser = this->userList[username];
+        this->currentUser = this->userList[username];
         this->credit = credit;
         this->valid = true;
       }

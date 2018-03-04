@@ -67,10 +67,9 @@ void refund(std::ofstream& out, Transaction transaction) {
 
     //Parse transaction code, add filling of spaces and zeroes.
     out << transaction.transactionCode
-        << " " << std::left << std::setfill(' ') << std::setw(16) << std::endl
+        << " " << std::left << std::setfill(' ') << std::setw(16)
         << buyer << std::setw(16)
         << seller
-        << std::setw(0) << transaction.currentUser.type << " "
         << std::right << std::setw(7) << std::setfill('0')
         << s << std::endl;
 
@@ -100,7 +99,7 @@ void advertise(std::ofstream& out, Transaction transaction) {
         << username
         << std::setfill('0') << std::setw(3) << transaction.daysToExpiry
         << " "
-        << std::right << std::setw(7) << " "
+        << std::right << std::setw(7)
         << s << std::endl;
 
     return;

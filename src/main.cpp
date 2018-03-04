@@ -78,6 +78,9 @@ int main(int argv, char** args) {
 
             } else {
                 std::cout << "Error: please login before attempting other transaction" << std::endl;
+                std::cin.clear();
+                std::cin.ignore();
+                return -1;
             }
 
         }
