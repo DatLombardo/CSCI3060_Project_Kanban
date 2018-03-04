@@ -1,7 +1,8 @@
 /*
-    Kanban
+Kanban
+fileout.hpp
 
-    This class will handle file output given a list of valid transactions.
+This class will handle file output given a list of valid transactions.
 */
 
 #pragma once

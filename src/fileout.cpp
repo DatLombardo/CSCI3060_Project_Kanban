@@ -1,16 +1,36 @@
+/*
+Kanban
+fileout.hpp
+
+Class to write out the daily transaction file
+*/
+
 #include <iostream>
 #include <fstream>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string.hpp>
 #include <iomanip>
-
 #include "fileout.hpp"
 
+/*
+Fileout - Fileout
+Default empty constructor for fileout, used when defined to empty.
+@params: None
+@return: Void
+*/
 Fileout::Fileout(){
-  
+
 }
 
+/*
+typeOne
+First type of transaction write
+  format: XX_UUUUUUUUUUUUUUU_TT_CCCCCCCCC
+@params: out file outstream, transaction current transaction instance being
+  written.
+@return: Void
+*/
 void typeOne(std::ofstream& out, Transaction transaction) {
     std::string username = transaction.currentUser.username;
 
@@ -20,10 +40,8 @@ void typeOne(std::ofstream& out, Transaction transaction) {
 
     std::cout << transaction.currentUser.credits << " " + transaction.currentUser.type << std::endl;
 
-    // boost::erase_all(s, ".");
-    // boost::erase_all(s, "\n");
-
-    out << transaction.transactionCode 
+    //Parse transaction code, add filling of spaces and zeroes.
+    out << transaction.transactionCode
         << " " << std::left
         << std::setfill(' ') << std::setw(16)
         << username
@@ -31,12 +49,17 @@ void typeOne(std::ofstream& out, Transaction transaction) {
         << std::right << std::setfill('0') << std::setw(9)
         << s << std::endl;
 
-    // std::cout << std::endl;
-    // std::cout << s << std::endl;
-
     return;
 }
 
+/*
+refund
+Writes refund transaction to daily transaction file.
+  format: XX_UUUUUUUUUUUUUUU_SSSSSSSSSSSSSSS_CCCCCCCCC
+@params: out file outstream, transaction current transaction instance being
+  written.
+@return: Void
+*/
 void refund(std::ofstream& out, Transaction transaction) {
     std::string username = transaction.currentUser.username;
     std::string seller = transaction.seller.username;
@@ -46,9 +69,8 @@ void refund(std::ofstream& out, Transaction transaction) {
     stream << std::fixed << std::setprecision(2) << transaction.credit;
     std::string s = stream.str();
 
-    // boost::erase_all(s, ".");
-
-    out << transaction.transactionCode 
+    //Parse transaction code, add filling of spaces and zeroes.
+    out << transaction.transactionCode
         << " " << std::left << std::setfill(' ') << std::setw(16) << std::endl
         << buyer << std::setw(16)
         << seller
@@ -59,6 +81,14 @@ void refund(std::ofstream& out, Transaction transaction) {
     return;
 }
 
+/*
+advertise
+Writes advertise transaction to daily transaction file.
+  format: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_DDD_PPPPPP
+@params: out file outstream, transaction current transaction instance being
+  written.
+@return: Void
+*/
 void advertise(std::ofstream& out, Transaction transaction) {
     std::string username = transaction.currentUser.username;
 
@@ -66,9 +96,8 @@ void advertise(std::ofstream& out, Transaction transaction) {
     stream << std::fixed << std::setprecision(2) << transaction.minBid;
     std::string s = stream.str();
 
-    // boost::erase_all(s, ".");
-
-    out << transaction.transactionCode 
+    //Parse transaction code, add filling of spaces and zeroes.
+    out << transaction.transactionCode
         << " " << std::left << std::setfill(' ') << std::setw(26)
         << transaction.item.itemName
         << std::setfill(' ') << std::setw(16)
@@ -81,6 +110,14 @@ void advertise(std::ofstream& out, Transaction transaction) {
     return;
 }
 
+/*
+bid
+Writes bid transaction to daily transaction file.
+  format: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSSSS_UUUUUUUUUUUUUU_PPPPPP
+@params: out file outstream, transaction current transaction instance being
+  written.
+@return: Void
+*/
 void bid(std::ofstream& out, Transaction transaction) {
     std::string username = transaction.currentUser.username;
     std::string seller = transaction.seller.username;
@@ -90,10 +127,9 @@ void bid(std::ofstream& out, Transaction transaction) {
     stream << std::fixed << std::setprecision(2) << transaction.minBid;
     std::string s = stream.str();
 
-    // boost::erase_all(s, ".");
-
-    out << transaction.transactionCode 
-        << " " << std::left << std::setfill(' ') << std::setw(26) 
+    //Parse transaction code, add filling of spaces and zeroes.
+    out << transaction.transactionCode
+        << " " << std::left << std::setfill(' ') << std::setw(26)
         << transaction.item.itemName
         << std::setfill(' ') << std::setw(16)
         << seller << std::setw(16)
@@ -104,15 +140,25 @@ void bid(std::ofstream& out, Transaction transaction) {
     return;
 }
 
+/*
+Fileout::writeTransactions
+Function called in main to execute writing current pending transactions to the
+  daily transaction file. Transactions are split up into different function calls
+  to be parsed to the file.
+@params: transactions vector list of all pending transactions.
+@return: Void
+*/
 void Fileout::writeTransactions(std::vector<Transaction> transactions) {
     std::ofstream out("output.fout", std::ios_base::app);
 
+    //Iterate through each of the transactions and pass transaction code to
+    // relevant code parser.
     for (auto trans : transactions) {
         if (trans.transactionCode == "10" || trans.transactionCode == "00" ||
             trans.transactionCode == "01" || trans.transactionCode == "02" ||
             trans.transactionCode == "06")
             typeOne(out, trans);
-        
+
         if (trans.transactionCode == "05")
             refund(out, trans);
 

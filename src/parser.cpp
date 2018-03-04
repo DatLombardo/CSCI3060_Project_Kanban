@@ -15,26 +15,11 @@ Parser::Parser() {
 }
 
 /*
-Parser - ReadDailyTrans
-Reads the daily transaction file into dedicated vector.
-@params: fileName, passed file to be read.
-@return: None
+split
+Breaks passed string of request into tokens
+@params: s string containing line read, delimter character to split each token.
+@return: token list of split by delimiter
 */
-// void Parser::ReadDailyTrans(std::string fileName) {
-//     std::ifstream fileReader(fileName);
-// 		std::string currentLine;
-// 		//Testing the file open.
-//     if(!fileReader) {
-//         std::cout<<"Error opening output file"<< std::endl;
-//     }
-// 		//Read file line by line
-//     while (std::getline(fileReader, currentLine)){
-//         this->dailyTrans.push_back(currentLine);
-//     }
-
-// 		fileReader.close();
-// }
-
 std::vector<std::string> split(const std::string& s, char delimiter)
 {
    std::vector<std::string> tokens;
@@ -51,12 +36,11 @@ std::vector<std::string> split(const std::string& s, char delimiter)
 Parser - ReadCurrentUsers
 Reads the current User accounts file into dedicated vector.
 @params: fileName, passed file to be read.
-@return: None
+@return: user list.
 */
 std::map<std::string, User> Parser::ReadCurrentUsers(std::string fileName) {
 	std::map<std::string, User> users;
 
-    //std::ifstream fileReader(fileName);
 	std::ifstream fileReader;
 	fileReader.open(fileName);
 		std::string currentLine;
@@ -67,19 +51,16 @@ std::map<std::string, User> Parser::ReadCurrentUsers(std::string fileName) {
 			std::string username = currentLine.substr(0, 15);
 			std::string type = currentLine.substr(16, 2);
 			std::string credits = currentLine.substr(19, 9);
-			//std::cout << credits << std::endl << creditsDec << std::endl;
-			
-			boost::trim(username);
-			// std::cout << finalVal << std::endl;
 
+			boost::trim(username);
+
+      //Declare user instance and store into user map.
 			User user = User(username, type, stof(credits));
 			users[username] = user;
 		}
 
 	} else
 		std::cout<<"Error opening users file"<< std::endl;
-
-	
 
 	fileReader.close();
 
@@ -90,7 +71,7 @@ std::map<std::string, User> Parser::ReadCurrentUsers(std::string fileName) {
 Parser - ReadAvailItems
 Reads the availiable items file into dedicated vector.
 @params: fileName, passed file to be read.
-@return: None
+@return: item list
 */
 std::map<std::string, Item> Parser::ReadAvailItems(std::string fileName) {
     std::map<std::string, Item> items;
@@ -113,8 +94,7 @@ std::map<std::string, Item> Parser::ReadAvailItems(std::string fileName) {
 		boost::trim(seller);
 		boost::trim(topBidUser);
 
-		// std::cout << itemname << seller << topBidUser << daysToExpiry << credits << creditsDec << std::endl;
-
+    //Declare item instance and store into item map.
 		Item item = Item(itemname, seller, topBidUser, stoi(daysToExpiry), stof(credits));
 		items[itemname] = item;
     }
@@ -122,6 +102,4 @@ std::map<std::string, Item> Parser::ReadAvailItems(std::string fileName) {
 	fileReader.close();
 
 	return items;
-
-	
 }
