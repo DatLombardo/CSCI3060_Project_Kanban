@@ -17,10 +17,18 @@ deal with User input appropriately.
 int main(int argv, char** args) {
     std::cout << "Welcome to TerribleAuction\nBy: Kanban Group™\n" << std::endl;
     std::string outFile = "output.fout";
+    std::string usersFile;
+    std::string itemsFile;
 
-    if (argv > 1) {
-        if (std::string(args[1]) == "-testmode")
-            outFile = std::string(args[2]);
+    if (argv == 4) {
+//        if (std::string(args[1]) == "-testmode")
+//            outFile = std::string(args[2]);
+        
+        outFile = std::string(args[3]);
+        usersFile = std::string(args[1]);
+        itemsFile = std::string(args[2]);
+    } else {
+        std::cout << "usage: auction <users file> <items file> <output file>" << std::endl;
     }
 
 
@@ -34,9 +42,8 @@ int main(int argv, char** args) {
     //Define parser class, read in user and item list to be passed to
     // each of the transaction instances during a users system use.
     Parser p = Parser();
-    std::map<std::string, User> userList = p.ReadCurrentUsers("data/userlist.txt");
-    std::map<std::string, Item> itemList = p.ReadAvailItems("data/itemlist.txt");
-
+    std::map<std::string, User> userList = p.ReadCurrentUsers(usersFile);
+    std::map<std::string, Item> itemList = p.ReadAvailItems(itemsFile);
     //Continously loop until logout is called, logout is the only break.
     while (true) {
         std::string userInput;

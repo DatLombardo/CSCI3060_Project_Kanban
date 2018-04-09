@@ -34,7 +34,7 @@ void typeOne(std::ofstream& out, Transaction transaction) {
     stream << std::fixed << std::setprecision(2) << transaction.currentUser.credits << std::flush;
     std::string s = stream.str();
 
-    std::cout << transaction.currentUser.credits << " " + transaction.currentUser.type << std::endl;
+//    std::cout << transaction.currentUser.credits << " " + transaction.currentUser.type << std::endl;
 
     //Parse transaction code, add filling of spaces and zeroes.
     out << transaction.transactionCode
